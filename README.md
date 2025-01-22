@@ -14,8 +14,19 @@ In this paper, we propose a new sparsity-aware Transformer that captures task- a
 Then the identified sparsity pattern is utilized in the sparse training, transferred from the standard training, based on the degree of skewness and distance values of the attention score matrices.
 Experimental results demonstrate that our approach significantly reduces the number of operations in the multi-head attention operations, achieving up to 2.84$\times$ training speedup, 6.87$\times$ memory reduction and better accuracy compared to state-of-the-art sparse Transformer models.
 <img src='figs/transition_point.png' />
-<img src='figs/Dense.png' />
-<img src='figs/Sparse.png' />
+<table>
+    <tr>
+        <td style="text-align: center;">
+            <img src="figs/Dense.png" alt="Dense Image">
+            <div style="margin-top: 5px; font-size: 14px; text-align: center;">Dense MHA training phase</div>
+        </td>
+        <td style="text-align: center;">
+            <img src="figs/Sparse.png" alt="Sparse Image">
+            <div style="margin-top: 5px; font-size: 14px; text-align: center;">Sparse MHA training phase</div>
+        </td>
+    </tr>
+</table>
+
 
 ## Requirements
 * python 3.8+
