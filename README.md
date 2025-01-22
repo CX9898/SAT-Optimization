@@ -1,9 +1,5 @@
 # SAT
 
-This repository is for SAT model by [@Bokyeong1001](https://github.com/Bokyeong1001), proposed in the following paper:
-
-> [Bokyeong Yoon](https://sites.google.com/view/bkyoon), Ah-Hyun Lee and [Gordon Moon](https://gordonmoon.github.io/). SAT: Exploring Attention Sparsity to Accelerate Transformer Training on GPUs. [Paper in IEEE Access](https://ieeexplore.ieee.org/document/10589623). 
-
 ## Introduction
 
 The computational complexity required for training a Transformer model quadratically increases as the length of the input sequence increases.
