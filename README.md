@@ -36,25 +36,25 @@ sh compile.sh
 ```
 
 ### 2. Train
-
-* SPION-CF
-
 ```
-python main_conv_ff.py --mode train --task lra-image --random 1001 --name conv_ff
+python main_learnable_skewness.py --mode train --task lra-image --random 1001 --name sat --sk 1.7 --ds 1.3
 ```
 
-* SPION-C
-```
-python main_conv.py --mode train --task lra-image --random 1001 --name conv
-```
-
-* SPION-F
-```
-python main_ff.py --mode train --task lra-image --random 1001 --name ff
-```
 
 ### 3. Inference
 
 ```
 python main_inference.py --mode eval --task lra-image --random 1001 --name conv_ff
+```
+
+
+## Citation
+```
+@article{yoon2024exploring,
+  title={Exploring Attention Sparsity to Accelerate Transformer Training on GPUs},
+  author={Yoon, Bokyeong and Lee, Ah-Hyun and Kim, Jinsung and Moon, Gordon Euhyun},
+  journal={IEEE Access},
+  year={2024},
+  publisher={IEEE}
+}
 ```
