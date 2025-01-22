@@ -1,0 +1,136 @@
+GPU list: [0, 1, 2, 3]
+[
+    {
+        "learn_pos_emb": true,
+        "tied_weights": false,
+        "embedding_dim": 64,
+        "transformer_dim": 64,
+        "transformer_hidden_dim": 128,
+        "head_dim": 32,
+        "num_head": 2,
+        "num_layers": 2,
+        "vocab_size": 256,
+        "max_seq_len": 1024,
+        "dropout_prob": 0.1,
+        "attention_dropout": 0.1,
+        "pooling_mode": "MEAN",
+        "num_classes": 10,
+        "block_size": 32,
+        "batch_size": 128,
+        "density": 0.05,
+        "mixed_precision": true,
+        "random_seed": 3,
+        "task": "lra-image"
+    },
+    {
+        "batch_size": 512,
+        "learning_rate": 0.002,
+        "warmup": 175,
+        "lr_decay": "linear",
+        "weight_decay": 0,
+        "eval_frequency": 500,
+        "num_train_steps": 10000,
+        "num_init_steps": 0,
+        "num_eval_steps": 20,
+        "num_dense_train_steps": 10,
+        "attn_loss_scale": 0.01
+    }
+]
+attn compile
+attn compile
+DataParallel(
+  (module): ModelForSC(
+    (model): Model(
+      (embeddings): Embeddings(
+        (word_embeddings): Embedding(256, 64)
+        (position_embeddings): Embedding(1024, 64)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (transformer_0): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_1): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+    )
+    (seq_classifer): SCHead(
+      (mlpblock): Sequential(
+        (0): Linear(in_features=64, out_features=128, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=128, out_features=10, bias=True)
+      )
+    )
+  )
+)
+parameter_size: [torch.Size([256, 64]), torch.Size([1024, 64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([10, 128]), torch.Size([10])]
+num_parameter: 160650
+Loaded ../Skyformer/data/lra_processed/lra-image.train.pickle... size=45000
+Loaded ../Skyformer/data/lra_processed/lra-image.dev.pickle... size=5000
+Loaded ../Skyformer/data/lra_processed/lra-image.test.pickle... size=10000
+accumu_steps=1
+[tensor([1.8573, 1.8573, 1.8573, 1.8573], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([2.0902, 2.0903, 2.0902, 2.0902], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  499 dev accu =  tensor(0.3647, device='cuda:0')
+
+Validation Results
+Global Steps: 499
+Valid Loss: 1.79235
+Valid Accuracy: 0.36475
+time stamp: 194.57599520683289
+module.model.transformer_0.mha.pattern saved
+module.model.transformer_1.mha.pattern saved
+./pickle/lra-image/module.model.transformer_0.mha.pattern.pickle
+tensor([ 759,   33,  231,  825,  858,  429,  693,  330,  792,  990,  957,  198,
+         297,    0,  726, 1023,  627,   99,  132,  495,   66,  660,  891,  363,
+         561,  462,  594,  396,  165,  924,  528,  245,  679,  859,  890,  442,
+         845,   61,  929,  762,  855,  311,  745,  702,  981,  760,  791,  218,
+         838,  239,  487], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn compile
+./pickle/lra-image/module.model.transformer_1.mha.pattern.pickle
+tensor([ 132,  825,   33,  693,  528,  858,  363,  990,  726,  891,  759,   99,
+         957,  198,   66,  297,  264,  660,  627,  561,    0,  594,  495,  429,
+        1023,  231,  462,  792,  396,  313,  809,  924,  330,  165,  154,  836,
+         125,  931,   20,  640,  761,  823,  112,  515,  534,  720,   16,  512,
+         670,  980,  144], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn compile
+total pattern searching time (s): 0.0053555965423583984

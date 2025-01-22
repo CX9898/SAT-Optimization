@@ -1,0 +1,133 @@
+GPU list: [0, 1, 2, 3]
+[
+    {
+        "learn_pos_emb": true,
+        "tied_weights": false,
+        "embedding_dim": 64,
+        "transformer_dim": 64,
+        "transformer_hidden_dim": 128,
+        "head_dim": 32,
+        "num_head": 2,
+        "num_layers": 2,
+        "vocab_size": 512,
+        "max_seq_len": 4096,
+        "dropout_prob": 0.1,
+        "attention_dropout": 0.1,
+        "pooling_mode": "MEAN",
+        "block_size": 64,
+        "num_classes": 2,
+        "batch_size": 8,
+        "density": 0.021,
+        "mixed_precision": true,
+        "random_seed": 7,
+        "task": "lra-retrieval"
+    },
+    {
+        "batch_size": 32,
+        "learning_rate": 0.0005,
+        "warmup": 800,
+        "lr_decay": "linear",
+        "weight_decay": 0,
+        "eval_frequency": 200,
+        "num_train_steps": 10000,
+        "num_init_steps": 3000,
+        "num_eval_steps": 300,
+        "num_dense_train_steps": 1000,
+        "patience": 10,
+        "attn_loss_scale": 0.01
+    }
+]
+attn_mask compile
+attn_mask compile
+DataParallel(
+  (module): ModelForSCDual(
+    (model): Model(
+      (embeddings): Embeddings(
+        (word_embeddings): Embedding(512, 64)
+        (position_embeddings): Embedding(4096, 64)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (transformer_0): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_1): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+    )
+    (seq_classifer): SCHeadDual(
+      (mlpblock): Sequential(
+        (0): Linear(in_features=256, out_features=128, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=128, out_features=2, bias=True)
+      )
+    )
+  )
+)
+parameter_size: [torch.Size([512, 64]), torch.Size([4096, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([64, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 256]), torch.Size([128]), torch.Size([2, 128]), torch.Size([2])]
+num_parameter: 399234
+Loaded ../Skyformer/data/lra_processed/lra-retrieval.train.pickle... size=147086
+Loaded ../Skyformer/data/lra_processed/lra-retrieval.dev.pickle... size=18090
+Loaded ../Skyformer/data/lra_processed/lra-retrieval.test.pickle... size=17437
+accumu_steps=1
+module.model.transformer_0.mha.pattern saved
+module.model.transformer_1.mha.pattern saved
+./pickle/lra-retrieval/module.model.transformer_0.mha.pattern.pickle
+tensor([1625,  390, 1300, 2340, 2145, 3835, 3185, 2210, 1170, 2795,  975, 1040,
+        3965, 1105,  650,   65, 1755, 2405, 2470, 1177, 1618,  715, 1633, 2137,
+        1885, 3510, 2535, 3120, 3315, 1950,  404, 1286,    0, 3250, 1313, 2132,
+        1634, 2201, 1661, 3929, 1495, 1690,  325, 1430, 1305, 1620, 1329, 3156,
+         399,  966, 2860,  260,  910, 1654, 3481, 2925,  585,  916, 1294, 3195,
+        3825, 4095, 1113, 1617, 2347, 2788, 1323, 2772, 1049, 1616, 2600, 1172,
+        1298,  520,  345, 1605, 1638, 2457,  980, 1295,  130, 1195, 2770, 3190,
+        3505, 1318], device='cuda:0')
+tensor(86, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-retrieval/module.model.transformer_1.mha.pattern.pickle
+tensor([3185, 1040, 1950,   65,    0, 1690, 4095, 2925, 2210,   80, 1025,  260,
+        2015, 2275, 2860, 4030, 1073, 3152, 1235, 3640, 2535, 1058, 2192, 1820,
+        3380, 1076, 3344, 1063, 2512, 1969, 3166, 3965, 2600,  715, 2033, 3167,
+         720, 1035, 2929, 3181, 1560, 1085, 3920, 3835, 1054, 1936,   16, 1024,
+         305, 3140, 1959, 2526,   30, 1920,  272, 1028, 3900,  286, 1924,  455,
+          99, 2241, 1087, 4048, 1043, 1232, 1050, 1680, 1495,   34, 2176,  113,
+        3137, 2665, 3575, 1068, 2832, 3196, 3889, 1069, 2896,  103, 2497,   95,
+        1985, 1954], device='cuda:0')
+tensor(86, device='cuda:0')
+block_attn_mask compile
+total pattern searching time (s): 0.11985063552856445

@@ -1,0 +1,1515 @@
+GPU list: [0, 1, 2, 3]
+[
+    {
+        "learn_pos_emb": true,
+        "tied_weights": false,
+        "embedding_dim": 64,
+        "transformer_dim": 64,
+        "transformer_hidden_dim": 128,
+        "head_dim": 32,
+        "num_head": 2,
+        "num_layers": 4,
+        "vocab_size": 512,
+        "max_seq_len": 1024,
+        "dropout_prob": 0.1,
+        "attention_dropout": 0.1,
+        "pooling_mode": "MEAN",
+        "num_classes": 2,
+        "block_size": 32,
+        "batch_size": 128,
+        "density": 0.05,
+        "mixed_precision": true,
+        "random_seed": 8,
+        "task": "lra-yelp1"
+    },
+    {
+        "batch_size": 512,
+        "learning_rate": 0.0007,
+        "warmup": 80,
+        "lr_decay": "linear",
+        "weight_decay": 0,
+        "eval_frequency": 200,
+        "num_train_steps": 30000,
+        "num_init_steps": 17000,
+        "num_eval_steps": 200,
+        "num_dense_train_steps": 1000,
+        "patience": 10,
+        "attn_loss_scale": 0.01
+    }
+]
+attn_mask compile
+attn_mask compile
+attn_mask compile
+attn_mask compile
+DataParallel(
+  (module): ModelForSC(
+    (model): Model(
+      (embeddings): Embeddings(
+        (word_embeddings): Embedding(512, 64)
+        (position_embeddings): Embedding(1024, 64)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (transformer_0): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_1): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_2): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_3): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+    )
+    (seq_classifer): SCHead(
+      (mlpblock): Sequential(
+        (0): Linear(in_features=64, out_features=128, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=128, out_features=2, bias=True)
+      )
+    )
+  )
+)
+parameter_size: [torch.Size([512, 64]), torch.Size([1024, 64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([2, 128]), torch.Size([2])]
+num_parameter: 244994
+Loaded ../Skyformer/data/lra_processed/lra-yelp1.train.pickle... size=560000
+Loaded ../Skyformer/data/lra_processed/lra-yelp1.dev.pickle... size=38000
+Loaded ../Skyformer/data/lra_processed/lra-yelp1.test.pickle... size=38000
+accumu_steps=1
+[tensor([28.8144, 28.8144, 28.8145, 28.8145], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([31.1029, 31.1029, 31.1029, 31.1029], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([29.2477, 29.2477, 29.2477, 29.2478], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([28.9500, 28.9500, 28.9500, 28.9500], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  199 dev accu =  tensor(0.7080, device='cuda:0')
+
+Validation Results
+Global Steps: 199
+Valid Loss: 0.56726
+Valid Accuracy: 0.70797
+time stamp: 164.94276094436646
+[tensor([12.5636, 12.5636, 12.5636, 12.5636], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([13.6015, 13.6016, 13.6015, 13.6015], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([12.6555, 12.6555, 12.6555, 12.6555], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([12.5417, 12.5416, 12.5416, 12.5416], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  399 dev accu =  tensor(0.7227, device='cuda:0')
+
+Validation Results
+Global Steps: 399
+Valid Loss: 0.54356
+Valid Accuracy: 0.72273
+time stamp: 327.3657464981079
+[tensor([6.3639, 6.3639, 6.3639, 6.3639], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([6.8741, 6.8740, 6.8741, 6.8740], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([6.3466, 6.3466, 6.3466, 6.3466], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([6.3040, 6.3041, 6.3040, 6.3040], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 599
+Valid Loss: 0.57789
+Valid Accuracy: 0.70458
+time stamp: 489.5543599128723
+[tensor([3.6265, 3.6265, 3.6265, 3.6265], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([3.8963, 3.8963, 3.8963, 3.8963], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([3.5767, 3.5767, 3.5767, 3.5767], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([3.5633, 3.5633, 3.5633, 3.5633], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  799 dev accu =  tensor(0.7336, device='cuda:0')
+
+Validation Results
+Global Steps: 799
+Valid Loss: 0.52381
+Valid Accuracy: 0.73355
+time stamp: 651.5236089229584
+[tensor([2.2686, 2.2686, 2.2686, 2.2686], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([2.4206, 2.4206, 2.4207, 2.4207], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([2.2124, 2.2124, 2.2124, 2.2124], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([2.2110, 2.2110, 2.2110, 2.2109], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 999
+Valid Loss: 0.53156
+Valid Accuracy: 0.72918
+time stamp: 813.9500451087952
+[tensor([1.5282, 1.5282, 1.5282, 1.5282], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.6191, 1.6192, 1.6191, 1.6191], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.4745, 1.4745, 1.4745, 1.4745], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.4777, 1.4777, 1.4777, 1.4777], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  1199 dev accu =  tensor(0.7386, device='cuda:0')
+
+Validation Results
+Global Steps: 1199
+Valid Loss: 0.52283
+Valid Accuracy: 0.73858
+time stamp: 978.5895442962646
+[tensor([1.0916, 1.0916, 1.0916, 1.0916], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.1493, 1.1493, 1.1493, 1.1493], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.0434, 1.0434, 1.0434, 1.0434], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.0477, 1.0477, 1.0477, 1.0477], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 1399
+Valid Loss: 0.52461
+Valid Accuracy: 0.73571
+time stamp: 1141.832011938095
+[tensor([0.8165, 0.8164, 0.8165, 0.8164], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.8555, 0.8555, 0.8555, 0.8555], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.7743, 0.7743, 0.7743, 0.7743], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.7782, 0.7782, 0.7782, 0.7782], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 1599
+Valid Loss: 0.52276
+Valid Accuracy: 0.73608
+time stamp: 1305.137621641159
+[tensor([0.6329, 0.6329, 0.6329, 0.6329], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.6610, 0.6611, 0.6611, 0.6611], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.5966, 0.5966, 0.5965, 0.5966], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.5994, 0.5994, 0.5994, 0.5994], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  1799 dev accu =  tensor(0.7411, device='cuda:0')
+
+Validation Results
+Global Steps: 1799
+Valid Loss: 0.51550
+Valid Accuracy: 0.74107
+time stamp: 1469.8143236637115
+[tensor([0.5042, 0.5042, 0.5042, 0.5042], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.5259, 0.5259, 0.5259, 0.5259], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.4732, 0.4732, 0.4732, 0.4732], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.4748, 0.4748, 0.4748, 0.4748], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  1999 dev accu =  tensor(0.7436, device='cuda:0')
+
+Validation Results
+Global Steps: 1999
+Valid Loss: 0.51640
+Valid Accuracy: 0.74357
+time stamp: 1635.0920894145966
+[tensor([0.4102, 0.4102, 0.4102, 0.4102], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.4279, 0.4279, 0.4279, 0.4279], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.3838, 0.3838, 0.3838, 0.3838], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.3843, 0.3843, 0.3843, 0.3843], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 2199
+Valid Loss: 0.51143
+Valid Accuracy: 0.74278
+time stamp: 1799.9077186584473
+[tensor([0.3390, 0.3390, 0.3390, 0.3390], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.3542, 0.3542, 0.3542, 0.3542], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.3167, 0.3167, 0.3167, 0.3167], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.3161, 0.3161, 0.3161, 0.3161], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 2399
+Valid Loss: 0.53041
+Valid Accuracy: 0.73276
+time stamp: 1963.9960417747498
+[tensor([0.2835, 0.2835, 0.2835, 0.2835], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2969, 0.2969, 0.2969, 0.2969], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2647, 0.2647, 0.2647, 0.2648], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2632, 0.2632, 0.2632, 0.2632], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 2599
+Valid Loss: 0.51332
+Valid Accuracy: 0.74260
+time stamp: 2127.4121651649475
+[tensor([0.2391, 0.2391, 0.2391, 0.2391], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2513, 0.2513, 0.2513, 0.2513], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2235, 0.2235, 0.2235, 0.2235], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2213, 0.2213, 0.2213, 0.2213], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 2799
+Valid Loss: 0.53006
+Valid Accuracy: 0.73172
+time stamp: 2292.823578119278
+[tensor([0.2030, 0.2030, 0.2030, 0.2030], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.2142, 0.2142, 0.2142, 0.2142], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1900, 0.1900, 0.1900, 0.1900], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1873, 0.1873, 0.1873, 0.1873], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  2999 dev accu =  tensor(0.7459, device='cuda:0')
+
+Validation Results
+Global Steps: 2999
+Valid Loss: 0.50983
+Valid Accuracy: 0.74589
+time stamp: 2457.8373641967773
+[tensor([0.1732, 0.1732, 0.1732, 0.1732], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1835, 0.1835, 0.1835, 0.1835], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1624, 0.1624, 0.1624, 0.1624], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1593, 0.1593, 0.1593, 0.1593], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 3199
+Valid Loss: 0.51337
+Valid Accuracy: 0.74188
+time stamp: 2622.711482524872
+[tensor([0.1482, 0.1482, 0.1482, 0.1482], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1578, 0.1578, 0.1578, 0.1578], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1393, 0.1393, 0.1393, 0.1393], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1361, 0.1361, 0.1361, 0.1361], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 3399
+Valid Loss: 0.50778
+Valid Accuracy: 0.74307
+time stamp: 2787.6086950302124
+[tensor([0.1272, 0.1272, 0.1272, 0.1272], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1361, 0.1361, 0.1361, 0.1361], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1199, 0.1199, 0.1199, 0.1199], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1166, 0.1166, 0.1166, 0.1166], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 3599
+Valid Loss: 0.51020
+Valid Accuracy: 0.74568
+time stamp: 2953.3620462417603
+[tensor([0.1093, 0.1093, 0.1093, 0.1093], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1175, 0.1175, 0.1175, 0.1175], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1034, 0.1034, 0.1034, 0.1034], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1001, 0.1001, 0.1001, 0.1001], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  3799 dev accu =  tensor(0.7463, device='cuda:0')
+
+Validation Results
+Global Steps: 3799
+Valid Loss: 0.51214
+Valid Accuracy: 0.74627
+time stamp: 3119.430762052536
+[tensor([0.0940, 0.0940, 0.0940, 0.0940], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.1015, 0.1015, 0.1015, 0.1015], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0893, 0.0893, 0.0893, 0.0893], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0860, 0.0860, 0.0860, 0.0860], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  3999 dev accu =  tensor(0.7499, device='cuda:0')
+
+Validation Results
+Global Steps: 3999
+Valid Loss: 0.50652
+Valid Accuracy: 0.74992
+time stamp: 3284.82661986351
+[tensor([0.0810, 0.0810, 0.0810, 0.0810], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0878, 0.0878, 0.0878, 0.0878], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0771, 0.0771, 0.0771, 0.0771], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0740, 0.0740, 0.0740, 0.0740], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 4199
+Valid Loss: 0.50588
+Valid Accuracy: 0.74851
+time stamp: 3450.593928337097
+[tensor([0.0697, 0.0697, 0.0697, 0.0697], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0760, 0.0760, 0.0760, 0.0760], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0667, 0.0667, 0.0667, 0.0667], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0637, 0.0637, 0.0637, 0.0637], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  4399 dev accu =  tensor(0.7524, device='cuda:0')
+
+Validation Results
+Global Steps: 4399
+Valid Loss: 0.49952
+Valid Accuracy: 0.75240
+time stamp: 3616.8789043426514
+[tensor([0.0601, 0.0601, 0.0601, 0.0601], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0657, 0.0657, 0.0657, 0.0657], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0576, 0.0576, 0.0576, 0.0576], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0549, 0.0549, 0.0549, 0.0549], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 4599
+Valid Loss: 0.51056
+Valid Accuracy: 0.74579
+time stamp: 3782.75572347641
+[tensor([0.0517, 0.0517, 0.0517, 0.0517], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0568, 0.0568, 0.0568, 0.0568], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0498, 0.0498, 0.0498, 0.0498], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0473, 0.0473, 0.0473, 0.0473], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 4799
+Valid Loss: 0.50444
+Valid Accuracy: 0.75082
+time stamp: 3949.241662502289
+[tensor([0.0445, 0.0445, 0.0445, 0.0445], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0491, 0.0491, 0.0491, 0.0491], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0431, 0.0431, 0.0431, 0.0431], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0407, 0.0407, 0.0407, 0.0407], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 4999
+Valid Loss: 0.50081
+Valid Accuracy: 0.75145
+time stamp: 4115.693655014038
+[tensor([0.0383, 0.0383, 0.0383, 0.0383], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0424, 0.0424, 0.0424, 0.0424], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0372, 0.0372, 0.0372, 0.0372], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0351, 0.0351, 0.0351, 0.0351], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  5199 dev accu =  tensor(0.7542, device='cuda:0')
+
+Validation Results
+Global Steps: 5199
+Valid Loss: 0.50084
+Valid Accuracy: 0.75419
+time stamp: 4281.523152112961
+[tensor([0.0330, 0.0330, 0.0330, 0.0330], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0365, 0.0365, 0.0365, 0.0365], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0321, 0.0321, 0.0321, 0.0321], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0302, 0.0302, 0.0302, 0.0302], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 5399
+Valid Loss: 0.50015
+Valid Accuracy: 0.74925
+time stamp: 4447.431373357773
+[tensor([0.0284, 0.0284, 0.0284, 0.0284], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0315, 0.0315, 0.0315, 0.0315], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0277, 0.0277, 0.0277, 0.0277], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0260, 0.0260, 0.0260, 0.0260], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 5599
+Valid Loss: 0.51185
+Valid Accuracy: 0.74750
+time stamp: 4614.491478443146
+[tensor([0.0244, 0.0244, 0.0244, 0.0244], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0271, 0.0271, 0.0271, 0.0271], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0239, 0.0239, 0.0239, 0.0239], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0224, 0.0224, 0.0224, 0.0224], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 5799
+Valid Loss: 0.50151
+Valid Accuracy: 0.75094
+time stamp: 4781.049705505371
+[tensor([0.0209, 0.0209, 0.0209, 0.0209], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0233, 0.0233, 0.0233, 0.0233], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0206, 0.0206, 0.0206, 0.0206], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0192, 0.0192, 0.0192, 0.0192], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 5999
+Valid Loss: 0.50735
+Valid Accuracy: 0.74979
+time stamp: 4946.946113824844
+[tensor([0.0180, 0.0180, 0.0180, 0.0180], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0201, 0.0201, 0.0201, 0.0201], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0177, 0.0177, 0.0177, 0.0177], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0165, 0.0165, 0.0165, 0.0165], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  6199 dev accu =  tensor(0.7570, device='cuda:0')
+
+Validation Results
+Global Steps: 6199
+Valid Loss: 0.49342
+Valid Accuracy: 0.75697
+time stamp: 5113.982790470123
+[tensor([0.0154, 0.0154, 0.0154, 0.0154], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0172, 0.0172, 0.0172, 0.0172], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0152, 0.0152, 0.0152, 0.0152], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0142, 0.0142, 0.0142, 0.0142], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 6399
+Valid Loss: 0.49539
+Valid Accuracy: 0.75686
+time stamp: 5281.777110815048
+[tensor([0.0132, 0.0132, 0.0132, 0.0132], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0148, 0.0148, 0.0148, 0.0148], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0131, 0.0131, 0.0131, 0.0131], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0122, 0.0122, 0.0122, 0.0122], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 6599
+Valid Loss: 0.49469
+Valid Accuracy: 0.75608
+time stamp: 5448.734320402145
+[tensor([0.0113, 0.0113, 0.0113, 0.0113], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0127, 0.0127, 0.0127, 0.0127], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0112, 0.0112, 0.0112, 0.0112], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0104, 0.0104, 0.0104, 0.0104], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 6799
+Valid Loss: 0.50090
+Valid Accuracy: 0.75466
+time stamp: 5615.389528751373
+[tensor([0.0097, 0.0097, 0.0097, 0.0097], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0109, 0.0109, 0.0109, 0.0109], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0096, 0.0096, 0.0096, 0.0096], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0090, 0.0090, 0.0090, 0.0090], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 6999
+Valid Loss: 0.49684
+Valid Accuracy: 0.75616
+time stamp: 5782.340482473373
+[tensor([0.0083, 0.0083, 0.0083, 0.0083], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0093, 0.0093, 0.0093, 0.0093], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0083, 0.0083, 0.0083, 0.0083], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0077, 0.0077, 0.0077, 0.0077], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  7199 dev accu =  tensor(0.7576, device='cuda:0')
+
+Validation Results
+Global Steps: 7199
+Valid Loss: 0.49694
+Valid Accuracy: 0.75763
+time stamp: 5948.922168493271
+[tensor([0.0071, 0.0071, 0.0071, 0.0071], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0079, 0.0079, 0.0079, 0.0079], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0071, 0.0071, 0.0071, 0.0071], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0066, 0.0066, 0.0066, 0.0066], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 7399
+Valid Loss: 0.49709
+Valid Accuracy: 0.75605
+time stamp: 6116.008731365204
+[tensor([0.0061, 0.0061, 0.0061, 0.0061], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0068, 0.0068, 0.0068, 0.0068], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0061, 0.0061, 0.0061, 0.0061], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0056, 0.0056, 0.0056, 0.0056], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 7599
+Valid Loss: 0.48990
+Valid Accuracy: 0.75704
+time stamp: 6282.284555435181
+[tensor([0.0052, 0.0052, 0.0052, 0.0052], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0058, 0.0058, 0.0058, 0.0058], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0052, 0.0052, 0.0052, 0.0052], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0048, 0.0048, 0.0048, 0.0048], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 7799
+Valid Loss: 0.49774
+Valid Accuracy: 0.75581
+time stamp: 6448.56557559967
+[tensor([0.0044, 0.0044, 0.0044, 0.0044], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0049, 0.0049, 0.0049, 0.0049], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0044, 0.0044, 0.0044, 0.0044], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0041, 0.0041, 0.0041, 0.0041], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 7999
+Valid Loss: 0.48994
+Valid Accuracy: 0.75696
+time stamp: 6615.931411027908
+[tensor([0.0038, 0.0038, 0.0038, 0.0038], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0042, 0.0042, 0.0042, 0.0042], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0038, 0.0038, 0.0038, 0.0038], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0035, 0.0035, 0.0035, 0.0035], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  8199 dev accu =  tensor(0.7584, device='cuda:0')
+
+Validation Results
+Global Steps: 8199
+Valid Loss: 0.48804
+Valid Accuracy: 0.75845
+time stamp: 6782.329661369324
+[tensor([0.0032, 0.0032, 0.0032, 0.0032], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0036, 0.0036, 0.0036, 0.0036], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0032, 0.0032, 0.0032, 0.0032], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0030, 0.0030, 0.0030, 0.0030], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  8399 dev accu =  tensor(0.7617, device='cuda:0')
+
+Validation Results
+Global Steps: 8399
+Valid Loss: 0.48827
+Valid Accuracy: 0.76170
+time stamp: 6950.555989027023
+[tensor([0.0027, 0.0027, 0.0027, 0.0027], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0031, 0.0031, 0.0031, 0.0031], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0027, 0.0027, 0.0027, 0.0027], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.0025, 0.0025, 0.0025, 0.0025], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 8599
+Valid Loss: 0.49046
+Valid Accuracy: 0.75942
+time stamp: 7118.433418750763
+module.model.transformer_0.mha.pattern saved
+module.model.transformer_1.mha.pattern saved
+module.model.transformer_2.mha.pattern saved
+module.model.transformer_3.mha.pattern saved
+./pickle/lra-yelp1/module.model.transformer_0.mha.pattern.pickle
+tensor([ 396, 1023,  726,  363,   99,  990,  495,  594,  759,  297,  693,  825,
+         957,  660,  627,  330,  462,  429,  264,  924,  528,  132,  792,   66,
+         198,   33,    0,  858,  561,  891,  165,  231,  503,  751,   16,  512,
+         733,  950,  215,  742,  348,  906,  767, 1015,   95,  994,  764,  919,
+         250,  839,  496], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-yelp1/module.model.transformer_1.mha.pattern.pickle
+tensor([ 495,  726,  594,    0,  957,  660,  330,  132,  693,  198,  363,  462,
+         429,  264,  990,  396,  792,  528,  924,  891,  165,  825,  759,   99,
+         297,  627,  231,  858,   33,  561, 1023,   66,   70,  194,  157,  932,
+         205,  422,  222,  966,  637,  947,  272,  520,  728,  790,  729,  822,
+          87,  738,  381], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-yelp1/module.model.transformer_2.mha.pattern.pickle
+tensor([ 990,  462,  429,  264,  627,  693,  165,  330,  594,  891,   99,  759,
+         132,   33,   66,  231,  726,  858,  198,  363,  660,  396,  561,  495,
+         528,  297,  825,  792,  957,    0, 1023,  924,  269,  424,  315,  873,
+         383, 1003,  174,  453,  307,  617,  542,  976,  279,  744,  117,  675,
+          36,  129,   13], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-yelp1/module.model.transformer_3.mha.pattern.pickle
+tensor([ 330,  132,   33,  660,   66,  792,  726,  561,  693,  297,   99,    0,
+         957,  858,  495,  264,  990,  891,  594,  165,  429,  528,  231,  825,
+         924,  759,  627,  396,  462, 1023,  363,  198,   89,  802,  698,  853,
+         186,  837,  501,  687,  467,  622,  540,  912,  152,  772,  701,  949,
+         303,  489,  203], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn_mask compile
+total pattern searching time (s): 0.0943598747253418
+[]
+
+Validation Results
+Global Steps: 8799
+Valid Loss: 0.51092
+Valid Accuracy: 0.74637
+time stamp: 7204.085566997528
+[]
+
+Validation Results
+Global Steps: 8999
+Valid Loss: 0.50058
+Valid Accuracy: 0.75080
+time stamp: 7238.784597635269
+[]
+
+Validation Results
+Global Steps: 9199
+Valid Loss: 0.49528
+Valid Accuracy: 0.75462
+time stamp: 7273.228702306747
+[]
+
+Validation Results
+Global Steps: 9399
+Valid Loss: 0.48940
+Valid Accuracy: 0.75761
+time stamp: 7308.171574831009
+[]
+
+Validation Results
+Global Steps: 9599
+Valid Loss: 0.48561
+Valid Accuracy: 0.76117
+time stamp: 7342.871616363525
+[]
+best model saved: step =  9799 dev accu =  tensor(0.7621, device='cuda:0')
+
+Validation Results
+Global Steps: 9799
+Valid Loss: 0.48119
+Valid Accuracy: 0.76212
+time stamp: 7377.756649494171
+[]
+
+Validation Results
+Global Steps: 9999
+Valid Loss: 0.49736
+Valid Accuracy: 0.74919
+time stamp: 7412.6201548576355
+[]
+best model saved: step =  10199 dev accu =  tensor(0.7629, device='cuda:0')
+
+Validation Results
+Global Steps: 10199
+Valid Loss: 0.47849
+Valid Accuracy: 0.76286
+time stamp: 7447.789355754852
+[]
+best model saved: step =  10399 dev accu =  tensor(0.7630, device='cuda:0')
+
+Validation Results
+Global Steps: 10399
+Valid Loss: 0.48225
+Valid Accuracy: 0.76301
+time stamp: 7482.400919437408
+[]
+best model saved: step =  10599 dev accu =  tensor(0.7665, device='cuda:0')
+
+Validation Results
+Global Steps: 10599
+Valid Loss: 0.47580
+Valid Accuracy: 0.76653
+time stamp: 7517.2817714214325
+[]
+
+Validation Results
+Global Steps: 10799
+Valid Loss: 0.48318
+Valid Accuracy: 0.76243
+time stamp: 7552.5222272872925
+[]
+best model saved: step =  10999 dev accu =  tensor(0.7671, device='cuda:0')
+
+Validation Results
+Global Steps: 10999
+Valid Loss: 0.47372
+Valid Accuracy: 0.76705
+time stamp: 7587.328241825104
+[]
+best model saved: step =  11199 dev accu =  tensor(0.7688, device='cuda:0')
+
+Validation Results
+Global Steps: 11199
+Valid Loss: 0.47274
+Valid Accuracy: 0.76885
+time stamp: 7622.052214860916
+[]
+
+Validation Results
+Global Steps: 11399
+Valid Loss: 0.48170
+Valid Accuracy: 0.76230
+time stamp: 7656.699484825134
+[]
+best model saved: step =  11599 dev accu =  tensor(0.7729, device='cuda:0')
+
+Validation Results
+Global Steps: 11599
+Valid Loss: 0.47482
+Valid Accuracy: 0.77295
+time stamp: 7691.381083726883
+[]
+
+Validation Results
+Global Steps: 11799
+Valid Loss: 0.46503
+Valid Accuracy: 0.77126
+time stamp: 7726.282000780106
+[]
+
+Validation Results
+Global Steps: 11999
+Valid Loss: 0.46685
+Valid Accuracy: 0.77114
+time stamp: 7760.81692647934
+[]
+
+Validation Results
+Global Steps: 12199
+Valid Loss: 0.48170
+Valid Accuracy: 0.76318
+time stamp: 7796.230415344238
+[]
+
+Validation Results
+Global Steps: 12399
+Valid Loss: 0.46760
+Valid Accuracy: 0.77276
+time stamp: 7831.103745937347
+[]
+best model saved: step =  12599 dev accu =  tensor(0.7744, device='cuda:0')
+
+Validation Results
+Global Steps: 12599
+Valid Loss: 0.46525
+Valid Accuracy: 0.77439
+time stamp: 7865.790511608124
+[]
+
+Validation Results
+Global Steps: 12799
+Valid Loss: 0.46509
+Valid Accuracy: 0.77312
+time stamp: 7900.683614730835
+[]
+
+Validation Results
+Global Steps: 12999
+Valid Loss: 0.47484
+Valid Accuracy: 0.76624
+time stamp: 7935.504538536072
+[]
+best model saved: step =  13199 dev accu =  tensor(0.7763, device='cuda:0')
+
+Validation Results
+Global Steps: 13199
+Valid Loss: 0.46563
+Valid Accuracy: 0.77633
+time stamp: 7970.089193105698
+[]
+
+Validation Results
+Global Steps: 13399
+Valid Loss: 0.46529
+Valid Accuracy: 0.77547
+time stamp: 8005.090715408325
+[]
+best model saved: step =  13599 dev accu =  tensor(0.7766, device='cuda:0')
+
+Validation Results
+Global Steps: 13599
+Valid Loss: 0.45698
+Valid Accuracy: 0.77663
+time stamp: 8039.6891849040985
+[]
+best model saved: step =  13799 dev accu =  tensor(0.7802, device='cuda:0')
+
+Validation Results
+Global Steps: 13799
+Valid Loss: 0.45554
+Valid Accuracy: 0.78020
+time stamp: 8074.499046325684
+[]
+
+Validation Results
+Global Steps: 13999
+Valid Loss: 0.45630
+Valid Accuracy: 0.77967
+time stamp: 8109.148870229721
+[]
+
+Validation Results
+Global Steps: 14199
+Valid Loss: 0.45528
+Valid Accuracy: 0.77857
+time stamp: 8143.887097358704
+[]
+
+Validation Results
+Global Steps: 14399
+Valid Loss: 0.46497
+Valid Accuracy: 0.77548
+time stamp: 8179.093922376633
+[]
+
+Validation Results
+Global Steps: 14599
+Valid Loss: 0.45274
+Valid Accuracy: 0.77926
+time stamp: 8213.73218178749
+[]
+best model saved: step =  14799 dev accu =  tensor(0.7821, device='cuda:0')
+
+Validation Results
+Global Steps: 14799
+Valid Loss: 0.45283
+Valid Accuracy: 0.78212
+time stamp: 8248.723902463913
+[]
+
+Validation Results
+Global Steps: 14999
+Valid Loss: 0.44967
+Valid Accuracy: 0.78157
+time stamp: 8283.420488834381
+[]
+
+Validation Results
+Global Steps: 15199
+Valid Loss: 0.44866
+Valid Accuracy: 0.78135
+time stamp: 8318.286097288132
+[]
+
+Validation Results
+Global Steps: 15399
+Valid Loss: 0.46281
+Valid Accuracy: 0.77692
+time stamp: 8353.314096689224
+[]
+
+Validation Results
+Global Steps: 15599
+Valid Loss: 0.46012
+Valid Accuracy: 0.78026
+time stamp: 8387.784207582474
+[]
+best model saved: step =  15799 dev accu =  tensor(0.7826, device='cuda:0')
+
+Validation Results
+Global Steps: 15799
+Valid Loss: 0.45206
+Valid Accuracy: 0.78258
+time stamp: 8422.628636360168
+[]
+
+Validation Results
+Global Steps: 15999
+Valid Loss: 0.45909
+Valid Accuracy: 0.77731
+time stamp: 8457.379572153091
+[]
+best model saved: step =  16199 dev accu =  tensor(0.7827, device='cuda:0')
+
+Validation Results
+Global Steps: 16199
+Valid Loss: 0.44922
+Valid Accuracy: 0.78274
+time stamp: 8491.86206817627
+[]
+best model saved: step =  16399 dev accu =  tensor(0.7847, device='cuda:0')
+
+Validation Results
+Global Steps: 16399
+Valid Loss: 0.44666
+Valid Accuracy: 0.78471
+time stamp: 8526.420578956604
+[]
+best model saved: step =  16599 dev accu =  tensor(0.7858, device='cuda:0')
+
+Validation Results
+Global Steps: 16599
+Valid Loss: 0.45042
+Valid Accuracy: 0.78582
+time stamp: 8561.844904184341
+[]
+
+Validation Results
+Global Steps: 16799
+Valid Loss: 0.44661
+Valid Accuracy: 0.78392
+time stamp: 8596.380070924759
+[]
+
+Validation Results
+Global Steps: 16999
+Valid Loss: 0.45299
+Valid Accuracy: 0.78006
+time stamp: 8631.003646850586
+[]
+
+Validation Results
+Global Steps: 17199
+Valid Loss: 0.44550
+Valid Accuracy: 0.78556
+time stamp: 8665.65228319168
+[]
+best model saved: step =  17399 dev accu =  tensor(0.7879, device='cuda:0')
+
+Validation Results
+Global Steps: 17399
+Valid Loss: 0.44047
+Valid Accuracy: 0.78792
+time stamp: 8700.594420671463
+[]
+best model saved: step =  17599 dev accu =  tensor(0.7887, device='cuda:0')
+
+Validation Results
+Global Steps: 17599
+Valid Loss: 0.44370
+Valid Accuracy: 0.78868
+time stamp: 8735.611557722092
+[]
+
+Validation Results
+Global Steps: 17799
+Valid Loss: 0.44912
+Valid Accuracy: 0.78501
+time stamp: 8770.244110822678
+[]
+
+Validation Results
+Global Steps: 17999
+Valid Loss: 0.44387
+Valid Accuracy: 0.78705
+time stamp: 8804.697425842285
+[]
+
+Validation Results
+Global Steps: 18199
+Valid Loss: 0.45254
+Valid Accuracy: 0.78462
+time stamp: 8839.218026638031
+[]
+
+Validation Results
+Global Steps: 18399
+Valid Loss: 0.44311
+Valid Accuracy: 0.78791
+time stamp: 8873.79196023941
+[]
+
+Validation Results
+Global Steps: 18599
+Valid Loss: 0.44235
+Valid Accuracy: 0.78819
+time stamp: 8908.70276260376
+[]
+
+Validation Results
+Global Steps: 18799
+Valid Loss: 0.44297
+Valid Accuracy: 0.78771
+time stamp: 8943.44266796112
+[]
+
+Validation Results
+Global Steps: 18999
+Valid Loss: 0.44658
+Valid Accuracy: 0.78203
+time stamp: 8978.547536611557
+[]
+best model saved: step =  19199 dev accu =  tensor(0.7897, device='cuda:0')
+
+Validation Results
+Global Steps: 19199
+Valid Loss: 0.43884
+Valid Accuracy: 0.78972
+time stamp: 9013.276172876358
+[]
+
+Validation Results
+Global Steps: 19399
+Valid Loss: 0.44072
+Valid Accuracy: 0.78814
+time stamp: 9048.348520755768
+[]
+
+Validation Results
+Global Steps: 19599
+Valid Loss: 0.43977
+Valid Accuracy: 0.78688
+time stamp: 9083.420080661774
+[]
+best model saved: step =  19799 dev accu =  tensor(0.7914, device='cuda:0')
+
+Validation Results
+Global Steps: 19799
+Valid Loss: 0.43580
+Valid Accuracy: 0.79141
+time stamp: 9118.615225315094
+[]
+
+Validation Results
+Global Steps: 19999
+Valid Loss: 0.43750
+Valid Accuracy: 0.79090
+time stamp: 9153.39029622078
+[]
+
+Validation Results
+Global Steps: 20199
+Valid Loss: 0.43827
+Valid Accuracy: 0.78982
+time stamp: 9187.93165898323
+[]
+
+Validation Results
+Global Steps: 20399
+Valid Loss: 0.43735
+Valid Accuracy: 0.78917
+time stamp: 9222.687873601913
+[]
+best model saved: step =  20599 dev accu =  tensor(0.7930, device='cuda:0')
+
+Validation Results
+Global Steps: 20599
+Valid Loss: 0.43648
+Valid Accuracy: 0.79296
+time stamp: 9257.679989099503
+[]
+
+Validation Results
+Global Steps: 20799
+Valid Loss: 0.43620
+Valid Accuracy: 0.79122
+time stamp: 9292.543368577957
+[]
+best model saved: step =  20999 dev accu =  tensor(0.7936, device='cuda:0')
+
+Validation Results
+Global Steps: 20999
+Valid Loss: 0.43295
+Valid Accuracy: 0.79363
+time stamp: 9327.516736507416
+[]
+
+Validation Results
+Global Steps: 21199
+Valid Loss: 0.43348
+Valid Accuracy: 0.79315
+time stamp: 9362.523777723312
+[]
+
+Validation Results
+Global Steps: 21399
+Valid Loss: 0.43309
+Valid Accuracy: 0.79144
+time stamp: 9397.195802927017
+[]
+
+Validation Results
+Global Steps: 21599
+Valid Loss: 0.43177
+Valid Accuracy: 0.79329
+time stamp: 9432.289318084717
+[]
+
+Validation Results
+Global Steps: 21799
+Valid Loss: 0.44244
+Valid Accuracy: 0.78683
+time stamp: 9466.944652318954
+[]
+
+Validation Results
+Global Steps: 21999
+Valid Loss: 0.43051
+Valid Accuracy: 0.79275
+time stamp: 9502.047390937805
+[]
+
+Validation Results
+Global Steps: 22199
+Valid Loss: 0.44237
+Valid Accuracy: 0.78260
+time stamp: 9537.326309919357
+[]
+best model saved: step =  22399 dev accu =  tensor(0.7938, device='cuda:0')
+
+Validation Results
+Global Steps: 22399
+Valid Loss: 0.43143
+Valid Accuracy: 0.79382
+time stamp: 9571.820785999298
+[]
+best model saved: step =  22599 dev accu =  tensor(0.7965, device='cuda:0')
+
+Validation Results
+Global Steps: 22599
+Valid Loss: 0.42602
+Valid Accuracy: 0.79647
+time stamp: 9606.560590744019
+[]
+
+Validation Results
+Global Steps: 22799
+Valid Loss: 0.43426
+Valid Accuracy: 0.79216
+time stamp: 9641.140377283096
+[]
+
+Validation Results
+Global Steps: 22999
+Valid Loss: 0.43647
+Valid Accuracy: 0.79398
+time stamp: 9676.138518571854
+[]
+
+Validation Results
+Global Steps: 23199
+Valid Loss: 0.43078
+Valid Accuracy: 0.79599
+time stamp: 9711.289404153824
+[]
+
+Validation Results
+Global Steps: 23399
+Valid Loss: 0.43218
+Valid Accuracy: 0.79402
+time stamp: 9746.38189792633
+[]
+
+Validation Results
+Global Steps: 23599
+Valid Loss: 0.43053
+Valid Accuracy: 0.79627
+time stamp: 9781.16119503975
+[]
+
+Validation Results
+Global Steps: 23799
+Valid Loss: 0.43777
+Valid Accuracy: 0.79085
+time stamp: 9816.226900815964
+[]
+best model saved: step =  23999 dev accu =  tensor(0.8000, device='cuda:0')
+
+Validation Results
+Global Steps: 23999
+Valid Loss: 0.42115
+Valid Accuracy: 0.80001
+time stamp: 9850.71710395813
+[]
+
+Validation Results
+Global Steps: 24199
+Valid Loss: 0.43317
+Valid Accuracy: 0.79771
+time stamp: 9885.48674249649
+[]
+best model saved: step =  24399 dev accu =  tensor(0.8020, device='cuda:0')
+
+Validation Results
+Global Steps: 24399
+Valid Loss: 0.42588
+Valid Accuracy: 0.80199
+time stamp: 9920.240704536438
+[]
+
+Validation Results
+Global Steps: 24599
+Valid Loss: 0.42251
+Valid Accuracy: 0.80009
+time stamp: 9955.09980583191
+[]
+
+Validation Results
+Global Steps: 24799
+Valid Loss: 0.43325
+Valid Accuracy: 0.79683
+time stamp: 9989.886017560959
+[]
+
+Validation Results
+Global Steps: 24999
+Valid Loss: 0.43337
+Valid Accuracy: 0.79449
+time stamp: 10024.88806962967
+[]
+best model saved: step =  25199 dev accu =  tensor(0.8030, device='cuda:0')
+
+Validation Results
+Global Steps: 25199
+Valid Loss: 0.42403
+Valid Accuracy: 0.80298
+time stamp: 10059.81456708908
+[]
+
+Validation Results
+Global Steps: 25399
+Valid Loss: 0.42273
+Valid Accuracy: 0.80097
+time stamp: 10094.749389648438
+[]
+
+Validation Results
+Global Steps: 25599
+Valid Loss: 0.42097
+Valid Accuracy: 0.80156
+time stamp: 10129.581935405731
+[]
+
+Validation Results
+Global Steps: 25799
+Valid Loss: 0.41862
+Valid Accuracy: 0.80269
+time stamp: 10163.82952594757
+[]
+
+Validation Results
+Global Steps: 25999
+Valid Loss: 0.42163
+Valid Accuracy: 0.80062
+time stamp: 10199.202780008316
+[]
+best model saved: step =  26199 dev accu =  tensor(0.8035, device='cuda:0')
+
+Validation Results
+Global Steps: 26199
+Valid Loss: 0.41666
+Valid Accuracy: 0.80348
+time stamp: 10233.872882843018
+[]
+best model saved: step =  26399 dev accu =  tensor(0.8046, device='cuda:0')
+
+Validation Results
+Global Steps: 26399
+Valid Loss: 0.41876
+Valid Accuracy: 0.80458
+time stamp: 10268.870663881302
+[]
+
+Validation Results
+Global Steps: 26599
+Valid Loss: 0.42425
+Valid Accuracy: 0.79866
+time stamp: 10303.358867168427
+[]
+
+Validation Results
+Global Steps: 26799
+Valid Loss: 0.41555
+Valid Accuracy: 0.80363
+time stamp: 10338.108103990555
+[]
+
+Validation Results
+Global Steps: 26999
+Valid Loss: 0.42343
+Valid Accuracy: 0.80325
+time stamp: 10372.950859069824
+[]
+best model saved: step =  27199 dev accu =  tensor(0.8065, device='cuda:0')
+
+Validation Results
+Global Steps: 27199
+Valid Loss: 0.41089
+Valid Accuracy: 0.80648
+time stamp: 10407.776354312897
+[]
+
+Validation Results
+Global Steps: 27399
+Valid Loss: 0.41500
+Valid Accuracy: 0.80421
+time stamp: 10442.577298641205
+[]
+best model saved: step =  27599 dev accu =  tensor(0.8091, device='cuda:0')
+
+Validation Results
+Global Steps: 27599
+Valid Loss: 0.41164
+Valid Accuracy: 0.80911
+time stamp: 10477.51942205429
+[]
+
+Validation Results
+Global Steps: 27799
+Valid Loss: 0.41139
+Valid Accuracy: 0.80851
+time stamp: 10512.413135766983
+[]
+
+Validation Results
+Global Steps: 27999
+Valid Loss: 0.41093
+Valid Accuracy: 0.80769
+time stamp: 10546.906655073166
+[]
+best model saved: step =  28199 dev accu =  tensor(0.8104, device='cuda:0')
+
+Validation Results
+Global Steps: 28199
+Valid Loss: 0.40365
+Valid Accuracy: 0.81044
+time stamp: 10581.662329435349
+[]
+best model saved: step =  28399 dev accu =  tensor(0.8112, device='cuda:0')
+
+Validation Results
+Global Steps: 28399
+Valid Loss: 0.40378
+Valid Accuracy: 0.81124
+time stamp: 10616.57745718956
+[]
+
+Validation Results
+Global Steps: 28599
+Valid Loss: 0.42594
+Valid Accuracy: 0.80548
+time stamp: 10651.36431837082
+[]
+best model saved: step =  28799 dev accu =  tensor(0.8122, device='cuda:0')
+
+Validation Results
+Global Steps: 28799
+Valid Loss: 0.40286
+Valid Accuracy: 0.81222
+time stamp: 10685.696975708008
+[]
+
+Validation Results
+Global Steps: 28999
+Valid Loss: 0.41300
+Valid Accuracy: 0.80847
+time stamp: 10720.537921667099
+[]
+best model saved: step =  29199 dev accu =  tensor(0.8136, device='cuda:0')
+
+Validation Results
+Global Steps: 29199
+Valid Loss: 0.40050
+Valid Accuracy: 0.81355
+time stamp: 10755.302332639694
+[]
+
+Validation Results
+Global Steps: 29399
+Valid Loss: 0.41416
+Valid Accuracy: 0.80544
+time stamp: 10790.255186080933
+[]
+
+Validation Results
+Global Steps: 29599
+Valid Loss: 0.39717
+Valid Accuracy: 0.81289
+time stamp: 10825.069156646729
+[]
+
+Validation Results
+Global Steps: 29799
+Valid Loss: 0.40238
+Valid Accuracy: 0.81288
+time stamp: 10860.094787597656
+[]
+best model saved: step =  29999 dev accu =  tensor(0.8161, device='cuda:0')
+
+Validation Results
+Global Steps: 29999
+Valid Loss: 0.39625
+Valid Accuracy: 0.81608
+time stamp: 10894.82211971283
+total training step (k): 30.0
+total training time (s): 10894.822803497314
+total training time (ms): 1907546.2158203125
+peak memory usage (MB): 12858
+allocated memory usage (MB): 664311526
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |   12024 KB |   12858 MB |  648741 GB |  648741 GB |
+|       from large pool |    6144 KB |   12846 MB |  644950 GB |  644950 GB |
+|       from small pool |    5880 KB |      27 MB |    3790 GB |    3790 GB |
+|---------------------------------------------------------------------------|
+| Active memory         |   12024 KB |   12858 MB |  648741 GB |  648741 GB |
+|       from large pool |    6144 KB |   12846 MB |  644950 GB |  644950 GB |
+|       from small pool |    5880 KB |      27 MB |    3790 GB |    3790 GB |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |   13776 MB |   13776 MB |   13776 MB |       0 B  |
+|       from large pool |   13748 MB |   13748 MB |   13748 MB |       0 B  |
+|       from small pool |      28 MB |      28 MB |      28 MB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |   10503 KB |    2073 MB |  409938 GB |  409938 GB |
+|       from large pool |   10240 KB |    2070 MB |  405678 GB |  405677 GB |
+|       from small pool |     263 KB |       6 MB |    4260 GB |    4260 GB |
+|---------------------------------------------------------------------------|
+| Allocations           |     398    |     670    |   35631 K  |   35631 K  |
+|       from large pool |       2    |      93    |   13500 K  |   13500 K  |
+|       from small pool |     396    |     659    |   22130 K  |   22130 K  |
+|---------------------------------------------------------------------------|
+| Active allocs         |     398    |     670    |   35631 K  |   35631 K  |
+|       from large pool |       2    |      93    |   13500 K  |   13500 K  |
+|       from small pool |     396    |     659    |   22130 K  |   22130 K  |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |      42    |      42    |      42    |       0    |
+|       from large pool |      28    |      28    |      28    |       0    |
+|       from small pool |      14    |      14    |      14    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       8    |      35    |   17871 K  |   17871 K  |
+|       from large pool |       1    |      20    |    5260 K  |    5260 K  |
+|       from small pool |       7    |      23    |   12611 K  |   12611 K  |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+loading the best model from: ./checkpoints/checkpoints-8/lra-yelp1/learnable.model
+Evaluation Results
+Loss: 0.39517
+Accuracy: 0.81683

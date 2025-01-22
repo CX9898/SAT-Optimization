@@ -1,0 +1,323 @@
+GPU list: [0, 1, 2, 3]
+[
+    {
+        "learn_pos_emb": true,
+        "tied_weights": false,
+        "embedding_dim": 64,
+        "transformer_dim": 64,
+        "transformer_hidden_dim": 128,
+        "head_dim": 32,
+        "num_head": 2,
+        "num_layers": 2,
+        "vocab_size": 256,
+        "max_seq_len": 1024,
+        "dropout_prob": 0.1,
+        "attention_dropout": 0.1,
+        "pooling_mode": "MEAN",
+        "num_classes": 10,
+        "block_size": 32,
+        "batch_size": 128,
+        "density": 0.05,
+        "mixed_precision": true,
+        "random_seed": 6,
+        "task": "lra-image"
+    },
+    {
+        "batch_size": 512,
+        "learning_rate": 0.002,
+        "warmup": 175,
+        "lr_decay": "linear",
+        "weight_decay": 0,
+        "eval_frequency": 500,
+        "num_train_steps": 10000,
+        "num_init_steps": 0,
+        "num_eval_steps": 20,
+        "num_dense_train_steps": 1000,
+        "attn_loss_scale": 0.01
+    }
+]
+attn compile
+attn compile
+DataParallel(
+  (module): ModelForSC(
+    (model): Model(
+      (embeddings): Embeddings(
+        (word_embeddings): Embedding(256, 64)
+        (position_embeddings): Embedding(1024, 64)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (transformer_0): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_1): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=32, stride=32, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+    )
+    (seq_classifer): SCHead(
+      (mlpblock): Sequential(
+        (0): Linear(in_features=64, out_features=128, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=128, out_features=10, bias=True)
+      )
+    )
+  )
+)
+parameter_size: [torch.Size([256, 64]), torch.Size([1024, 64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([10, 128]), torch.Size([10])]
+num_parameter: 160650
+Loaded ../Skyformer/data/lra_processed/lra-image.train.pickle... size=45000
+Loaded ../Skyformer/data/lra_processed/lra-image.dev.pickle... size=5000
+Loaded ../Skyformer/data/lra_processed/lra-image.test.pickle... size=10000
+accumu_steps=1
+module.model.transformer_0.mha.pattern saved
+module.model.transformer_1.mha.pattern saved
+./pickle/lra-image/module.model.transformer_0.mha.pattern.pickle
+tensor([ 792,  693,  627,  561,  429,  891,  528,    0, 1023,  330,   99,  726,
+         924,  198,  344,  778,   33,   66,   24,  768,  440,  781,  568,  785,
+         529,  560,  264,  231,  165,  632,  787,  396,  799, 1016,  703, 1013,
+         957,  462,  495,   88,  770,  533,  688,   21,  672,  117,  675,  639,
+        1011,  696,  789], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn compile
+./pickle/lra-image/module.model.transformer_1.mha.pattern.pickle
+tensor([ 198,  693,  429,  330,  825,  759,  132,  594,  165,   99,  528,   33,
+         210,  582,  205,  422,  726,  990,    0,  437,  685,  597,  690,  217,
+         806,  213,  678,  178,  581, 1023,  215,  742,  149,  676,  495,  601,
+         818,  697,  821,  627,  434,  589,  462,  185,  805,  202,  326,  441,
+         813,  208,  518], device='cuda:0')
+tensor(51, device='cuda:0')
+block_attn compile
+total pattern searching time (s): 0.005477428436279297
+[]
+best model saved: step =  499 dev accu =  tensor(0.3642, device='cuda:0')
+
+Validation Results
+Global Steps: 499
+Valid Loss: 1.75918
+Valid Accuracy: 0.36416
+time stamp: 96.28349995613098
+[]
+best model saved: step =  999 dev accu =  tensor(0.4023, device='cuda:0')
+
+Validation Results
+Global Steps: 999
+Valid Loss: 1.69708
+Valid Accuracy: 0.40234
+time stamp: 132.8892059326172
+[]
+
+Validation Results
+Global Steps: 1499
+Valid Loss: 1.68738
+Valid Accuracy: 0.40020
+time stamp: 169.1956272125244
+[]
+best model saved: step =  1999 dev accu =  tensor(0.4068, device='cuda:0')
+
+Validation Results
+Global Steps: 1999
+Valid Loss: 1.70840
+Valid Accuracy: 0.40684
+time stamp: 205.5829837322235
+[]
+best model saved: step =  2499 dev accu =  tensor(0.4235, device='cuda:0')
+
+Validation Results
+Global Steps: 2499
+Valid Loss: 1.68531
+Valid Accuracy: 0.42354
+time stamp: 241.8136179447174
+[]
+
+Validation Results
+Global Steps: 2999
+Valid Loss: 1.73387
+Valid Accuracy: 0.41475
+time stamp: 278.0383632183075
+[]
+
+Validation Results
+Global Steps: 3499
+Valid Loss: 1.74708
+Valid Accuracy: 0.41836
+time stamp: 314.32958912849426
+[]
+
+Validation Results
+Global Steps: 3999
+Valid Loss: 1.82717
+Valid Accuracy: 0.40410
+time stamp: 350.7132384777069
+[]
+
+Validation Results
+Global Steps: 4499
+Valid Loss: 1.87311
+Valid Accuracy: 0.39658
+time stamp: 387.3249852657318
+[]
+
+Validation Results
+Global Steps: 4999
+Valid Loss: 1.91275
+Valid Accuracy: 0.39453
+time stamp: 423.2053065299988
+[]
+
+Validation Results
+Global Steps: 5499
+Valid Loss: 1.91375
+Valid Accuracy: 0.39775
+time stamp: 460.0176875591278
+[]
+
+Validation Results
+Global Steps: 5999
+Valid Loss: 1.94115
+Valid Accuracy: 0.40166
+time stamp: 496.5262351036072
+[]
+
+Validation Results
+Global Steps: 6499
+Valid Loss: 1.97258
+Valid Accuracy: 0.40342
+time stamp: 533.1485557556152
+[]
+
+Validation Results
+Global Steps: 6999
+Valid Loss: 2.08546
+Valid Accuracy: 0.38789
+time stamp: 569.4513669013977
+[]
+
+Validation Results
+Global Steps: 7499
+Valid Loss: 2.06308
+Valid Accuracy: 0.40400
+time stamp: 605.6251451969147
+[]
+
+Validation Results
+Global Steps: 7999
+Valid Loss: 1.99196
+Valid Accuracy: 0.41514
+time stamp: 642.3498914241791
+[]
+
+Validation Results
+Global Steps: 8499
+Valid Loss: 2.08935
+Valid Accuracy: 0.40264
+time stamp: 678.5156345367432
+[]
+
+Validation Results
+Global Steps: 8999
+Valid Loss: 2.11729
+Valid Accuracy: 0.39707
+time stamp: 714.9862108230591
+[]
+
+Validation Results
+Global Steps: 9499
+Valid Loss: 2.10378
+Valid Accuracy: 0.40059
+time stamp: 751.3489079475403
+[]
+
+Validation Results
+Global Steps: 9999
+Valid Loss: 2.20231
+Valid Accuracy: 0.38857
+time stamp: 787.5332236289978
+total training step (k): 10.0
+total training time (s): 787.5337173938751
+total training time (ms): 13144.33056640625
+peak memory usage (MB): 8036
+allocated memory usage (MB): 49189082
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |    9993 KB |    8036 MB |   48036 GB |   48036 GB |
+|       from large pool |    6144 KB |    8030 MB |   47671 GB |   47671 GB |
+|       from small pool |    3849 KB |      15 MB |     364 GB |     364 GB |
+|---------------------------------------------------------------------------|
+| Active memory         |    9993 KB |    8036 MB |   48036 GB |   48036 GB |
+|       from large pool |    6144 KB |    8030 MB |   47671 GB |   47671 GB |
+|       from small pool |    3849 KB |      15 MB |     364 GB |     364 GB |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |    8612 MB |    8612 MB |    8612 MB |       0 B  |
+|       from large pool |    8596 MB |    8596 MB |    8596 MB |       0 B  |
+|       from small pool |      16 MB |      16 MB |      16 MB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |   10487 KB |    1109 MB |   40781 GB |   40781 GB |
+|       from large pool |   10240 KB |    1106 MB |   40329 GB |   40329 GB |
+|       from small pool |     247 KB |       4 MB |     451 GB |     451 GB |
+|---------------------------------------------------------------------------|
+| Allocations           |     228    |     304    |    5153 K  |    5153 K  |
+|       from large pool |       2    |      49    |    1786 K  |    1786 K  |
+|       from small pool |     226    |     285    |    3367 K  |    3366 K  |
+|---------------------------------------------------------------------------|
+| Active allocs         |     228    |     304    |    5153 K  |    5153 K  |
+|       from large pool |       2    |      49    |    1786 K  |    1786 K  |
+|       from small pool |     226    |     285    |    3367 K  |    3366 K  |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |      30    |      30    |      30    |       0    |
+|       from large pool |      22    |      22    |      22    |       0    |
+|       from small pool |       8    |       8    |       8    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |      12    |      23    |    2640 K  |    2640 K  |
+|       from large pool |       2    |      15    |     660 K  |     660 K  |
+|       from small pool |      10    |      14    |    1979 K  |    1979 K  |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+loading the best model from: ./checkpoints/checkpoints-6/lra-image/learnable.model
+Evaluation Results
+Loss: 1.71763
+Accuracy: 0.41766

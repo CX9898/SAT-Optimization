@@ -1,0 +1,404 @@
+GPU list: [0, 1, 2, 3]
+[
+    {
+        "learn_pos_emb": true,
+        "tied_weights": false,
+        "embedding_dim": 64,
+        "transformer_dim": 64,
+        "transformer_hidden_dim": 128,
+        "head_dim": 32,
+        "num_head": 2,
+        "num_layers": 4,
+        "vocab_size": 32,
+        "max_seq_len": 2048,
+        "dropout_prob": 0.1,
+        "attention_dropout": 0.1,
+        "pooling_mode": "MEAN",
+        "num_classes": 10,
+        "block_size": 64,
+        "batch_size": 32,
+        "density": 0.04,
+        "mixed_precision": true,
+        "random_seed": 8,
+        "task": "lra-listops"
+    },
+    {
+        "batch_size": 128,
+        "learning_rate": 0.0006,
+        "warmup": 1000,
+        "lr_decay": "linear",
+        "weight_decay": 0,
+        "eval_frequency": 500,
+        "num_train_steps": 10000,
+        "num_init_steps": 1000,
+        "num_eval_steps": 62,
+        "num_dense_train_steps": 1000,
+        "patience": 10,
+        "attn_loss_scale": 0.01
+    }
+]
+attn_mask compile
+attn_mask compile
+attn_mask compile
+attn_mask compile
+DataParallel(
+  (module): ModelForSC(
+    (model): Model(
+      (embeddings): Embeddings(
+        (word_embeddings): Embedding(32, 64)
+        (position_embeddings): Embedding(2048, 64)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (transformer_0): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_1): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_2): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (transformer_3): TransformerLayer(
+        (norm1): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mha): Attention(
+          (W_q): Linear(in_features=64, out_features=64, bias=True)
+          (W_k): Linear(in_features=64, out_features=64, bias=True)
+          (W_v): Linear(in_features=64, out_features=64, bias=True)
+          (avg_pool): AvgPool2d(kernel_size=64, stride=64, padding=0)
+          (MSEloss): MSELoss()
+          (attn): CUDAMaskAttention()
+          (ff): Linear(in_features=64, out_features=64, bias=True)
+        )
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (norm2): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+        (mlpblock): Sequential(
+          (0): Linear(in_features=64, out_features=128, bias=True)
+          (1): GELU(approximate='none')
+          (2): Dropout(p=0.1, inplace=False)
+          (3): Linear(in_features=128, out_features=64, bias=True)
+          (4): Dropout(p=0.1, inplace=False)
+        )
+      )
+      (norm): LayerNorm((64,), eps=1e-05, elementwise_affine=True)
+    )
+    (seq_classifer): SCHead(
+      (mlpblock): Sequential(
+        (0): Linear(in_features=64, out_features=128, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=128, out_features=10, bias=True)
+      )
+    )
+  )
+)
+parameter_size: [torch.Size([32, 64]), torch.Size([2048, 64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([32, 32]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64, 64]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([64, 128]), torch.Size([64]), torch.Size([64]), torch.Size([64]), torch.Size([128, 64]), torch.Size([128]), torch.Size([10, 128]), torch.Size([10])]
+num_parameter: 280842
+Loaded ../Skyformer/data/lra_processed/lra-listops.train.pickle... size=96000
+Loaded ../Skyformer/data/lra_processed/lra-listops.dev.pickle... size=2000
+Loaded ../Skyformer/data/lra_processed/lra-listops.test.pickle... size=2000
+accumu_steps=1
+[tensor([32.8696, 32.8696, 32.8696, 32.8696], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([32.1720, 32.1720, 32.1720, 32.1720], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([33.9942, 33.9942, 33.9943, 33.9942], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([41.1129, 41.1129, 41.1129, 41.1129], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  499 dev accu =  tensor(0.1912, device='cuda:0')
+
+Validation Results
+Global Steps: 499
+Valid Loss: 2.22822
+Valid Accuracy: 0.19115
+time stamp: 829.827050447464
+[tensor([8.9357, 8.9357, 8.9357, 8.9357], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([8.7152, 8.7152, 8.7152, 8.7152], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([9.2782, 9.2782, 9.2782, 9.2782], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([11.6430, 11.6430, 11.6430, 11.6430], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  999 dev accu =  tensor(0.3570, device='cuda:0')
+
+Validation Results
+Global Steps: 999
+Valid Loss: 1.73589
+Valid Accuracy: 0.35698
+time stamp: 1664.9915702342987
+[tensor([2.8992, 2.8992, 2.8992, 2.8992], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([2.8063, 2.8063, 2.8063, 2.8063], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([3.0010, 3.0010, 3.0010, 3.0010], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([3.8090, 3.8090, 3.8090, 3.8090], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+best model saved: step =  1499 dev accu =  tensor(0.3655, device='cuda:0')
+
+Validation Results
+Global Steps: 1499
+Valid Loss: 1.73541
+Valid Accuracy: 0.36555
+time stamp: 2499.221919298172
+[tensor([1.3482, 1.3482, 1.3482, 1.3482], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.2915, 1.2915, 1.2915, 1.2915], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.3872, 1.3872, 1.3872, 1.3872], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([1.7463, 1.7463, 1.7463, 1.7463], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 1999
+Valid Loss: 1.72808
+Valid Accuracy: 0.35484
+time stamp: 3334.483132123947
+[tensor([0.7687, 0.7687, 0.7687, 0.7687], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.7293, 0.7293, 0.7293, 0.7293], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.7873, 0.7873, 0.7873, 0.7873], device='cuda:0',
+       grad_fn=<GatherBackward>), tensor([0.9749, 0.9749, 0.9749, 0.9749], device='cuda:0',
+       grad_fn=<GatherBackward>)]
+
+Validation Results
+Global Steps: 2499
+Valid Loss: 1.73367
+Valid Accuracy: 0.36114
+time stamp: 4170.209938049316
+module.model.transformer_0.mha.pattern saved
+module.model.transformer_1.mha.pattern saved
+module.model.transformer_2.mha.pattern saved
+module.model.transformer_3.mha.pattern saved
+./pickle/lra-listops/module.model.transformer_0.mha.pattern.pickle
+tensor([ 429,   99,  396,  561, 1023,  231,   33,  693,  132,  759,  297,  330,
+         957,  858,  198,    0,  990,  363,  924,  264,  495,  528,  462,  660,
+         726,  891,   66,  627,  165,  792,  825,  594,  269,  424,  572,  913,
+          36,  129,  369,  555], device='cuda:0')
+tensor(40, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-listops/module.model.transformer_1.mha.pattern.pickle
+tensor([ 462,   33,  561,  858,  396,  132,   66,  957,  924,  198,  726,  297,
+         792,    0,  429,  759,  825,  495,  990,   99,  231,  165,  363,  627,
+         891,  330,  264, 1023,  693,  528,  594,  660,  410,  844,  733,  950,
+         154,  836,  134,  196], device='cuda:0')
+tensor(40, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-listops/module.model.transformer_2.mha.pattern.pickle
+tensor([ 462,  165,  264,  825, 1023,  759,  363,  594,  429,  891,  330,  858,
+         924,  132,  198,   66,  297,  528,  660,   33,  396,    0,  726,  231,
+          99,  792,  693,  495,  627,  561,  957,  990,  473,  814,  601,  818,
+         464,  526,  178,  581], device='cuda:0')
+tensor(40, device='cuda:0')
+block_attn_mask compile
+./pickle/lra-listops/module.model.transformer_3.mha.pattern.pickle
+tensor([ 396,  759,  231,  990,  132,  495,   99,  726,  924,   66,  528,  594,
+         561,  693,  792,   33,  264,  627,  858,  165,  429,  660,  891,  957,
+         330,  198,  297, 1023,  825,  462,    0,  363,  402,  588,  158,  964,
+          87,  738,  604,  914], device='cuda:0')
+tensor(40, device='cuda:0')
+block_attn_mask compile
+total pattern searching time (s): 0.12191367149353027
+[]
+
+Validation Results
+Global Steps: 2999
+Valid Loss: 1.81004
+Valid Accuracy: 0.34992
+time stamp: 4410.052748203278
+[]
+
+Validation Results
+Global Steps: 3499
+Valid Loss: 1.76935
+Valid Accuracy: 0.34551
+time stamp: 4455.188625097275
+[]
+
+Validation Results
+Global Steps: 3999
+Valid Loss: 1.71874
+Valid Accuracy: 0.36227
+time stamp: 4500.548583984375
+[]
+
+Validation Results
+Global Steps: 4499
+Valid Loss: 1.71424
+Valid Accuracy: 0.35874
+time stamp: 4546.254166841507
+[]
+
+Validation Results
+Global Steps: 4999
+Valid Loss: 1.69408
+Valid Accuracy: 0.36190
+time stamp: 4591.960868358612
+[]
+
+Validation Results
+Global Steps: 5499
+Valid Loss: 1.69919
+Valid Accuracy: 0.35005
+time stamp: 4637.389743089676
+[]
+
+Validation Results
+Global Steps: 5999
+Valid Loss: 1.69556
+Valid Accuracy: 0.35446
+time stamp: 4683.571323633194
+[]
+
+Validation Results
+Global Steps: 6499
+Valid Loss: 1.67866
+Valid Accuracy: 0.35938
+time stamp: 4729.023361682892
+[]
+
+Validation Results
+Global Steps: 6999
+Valid Loss: 1.69121
+Valid Accuracy: 0.35333
+time stamp: 4774.9375331401825
+[]
+best model saved: step =  7499 dev accu =  tensor(0.3664, device='cuda:0')
+
+Validation Results
+Global Steps: 7499
+Valid Loss: 1.67500
+Valid Accuracy: 0.36643
+time stamp: 4820.537162065506
+[]
+best model saved: step =  7999 dev accu =  tensor(0.3671, device='cuda:0')
+
+Validation Results
+Global Steps: 7999
+Valid Loss: 1.67402
+Valid Accuracy: 0.36706
+time stamp: 4866.305730104446
+[]
+best model saved: step =  8499 dev accu =  tensor(0.3698, device='cuda:0')
+
+Validation Results
+Global Steps: 8499
+Valid Loss: 1.67133
+Valid Accuracy: 0.36983
+time stamp: 4912.239559650421
+[]
+
+Validation Results
+Global Steps: 8999
+Valid Loss: 1.67614
+Valid Accuracy: 0.36631
+time stamp: 4957.9942808151245
+[]
+
+Validation Results
+Global Steps: 9499
+Valid Loss: 1.67487
+Valid Accuracy: 0.36177
+time stamp: 5003.200314760208
+[]
+
+Validation Results
+Global Steps: 9999
+Valid Loss: 1.67510
+Valid Accuracy: 0.36366
+time stamp: 5049.3496742248535
+total training step (k): 10.0
+total training time (s): 5049.350119590759
+total training time (ms): 69717.86206054688
+peak memory usage (MB): 12399
+allocated memory usage (MB): 127124226
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |    7572 KB |   12399 MB |  124144 GB |  124144 GB |
+|       from large pool |    3145 KB |   12391 MB |  123626 GB |  123626 GB |
+|       from small pool |    4427 KB |      13 MB |     518 GB |     518 GB |
+|---------------------------------------------------------------------------|
+| Active memory         |    7572 KB |   12399 MB |  124144 GB |  124144 GB |
+|       from large pool |    3145 KB |   12391 MB |  123626 GB |  123626 GB |
+|       from small pool |    4427 KB |      13 MB |     518 GB |     518 GB |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |   13530 MB |   13530 MB |   13530 MB |       0 B  |
+|       from large pool |   13516 MB |   13516 MB |   13516 MB |       0 B  |
+|       from small pool |      14 MB |      14 MB |      14 MB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |    1040 MB |    2061 MB |   42023 GB |   42022 GB |
+|       from large pool |    1036 MB |    2056 MB |   41470 GB |   41469 GB |
+|       from small pool |       3 MB |       7 MB |     552 GB |     552 GB |
+|---------------------------------------------------------------------------|
+| Allocations           |     246    |     407    |    9185 K  |    9185 K  |
+|       from large pool |       2    |      93    |    3529 K  |    3529 K  |
+|       from small pool |     244    |     381    |    5655 K  |    5655 K  |
+|---------------------------------------------------------------------------|
+| Active allocs         |     246    |     407    |    9185 K  |    9185 K  |
+|       from large pool |       2    |      93    |    3529 K  |    3529 K  |
+|       from small pool |     244    |     381    |    5655 K  |    5655 K  |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |      32    |      32    |      32    |       0    |
+|       from large pool |      25    |      25    |      25    |       0    |
+|       from small pool |       7    |       7    |       7    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |      11    |      31    |    4816 K  |    4816 K  |
+|       from large pool |       3    |      18    |    1868 K  |    1867 K  |
+|       from small pool |       8    |      22    |    2948 K  |    2948 K  |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+loading the best model from: ./checkpoints/checkpoints-8/lra-listops/learnable.model
+Evaluation Results
+Loss: 1.63943
+Accuracy: 0.38542
