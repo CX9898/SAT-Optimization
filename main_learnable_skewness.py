@@ -151,7 +151,7 @@ def validation(model, mat_lst, ds_iter, total_step, training_config, model_confi
 
 
 
-def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_config, model_config, writer, task, name):
+def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_config, model_config, writer, task, global_name):
 
     logger.info("***** Running training *****")
     logger.info("  Total steps = %d", training_config["num_train_steps"])
@@ -358,13 +358,18 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
 
             print("total pattern searching time (s): {}".format(time.time()-pattern_t))
             pickle_path = f'./pickle/layer_attn-{model_config["random_seed"]}'
+            print(f"Model is located at {pickle_path}")
+
             if not os.path.exists(pickle_path):
                 os.mkdir(pickle_path)
-            with open(f'{pickle_path}/mat_lst_{task}_{name}.pickle', 'wb') as f:
+
+            print(f"Model is saved at {pickle_path}/mat_list_{task}_{global_name}.pickle")
+            with open(f'{pickle_path}/mat_lst_{task}_{global_name}.pickle', 'wb') as f:
                 pickle.dump(mat_lst, f, pickle.HIGHEST_PROTOCOL)
             
-        if transition and step - dense_step == 10:
-            break 
+#        if transition and step - dense_step == 10:
+#            break
+
         if (step + 2) > total_step:
             break
 
