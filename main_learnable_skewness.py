@@ -41,7 +41,7 @@ def skewness(X) :
     return np.mean(z ** 3)
 
 def flood_fill(data, x, y, ff_mat, thresh):
-    
+
     if x+1 == data.shape[0] or y+1 == data.shape[1]:
         return data, x, y, ff_mat, thresh
     else:
@@ -89,6 +89,25 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
+def compute_attn_loss(attn_output):
+    # 如果是标量 tensor
+    if isinstance(attn_output, torch.Tensor) and attn_output.dim() == 0:
+        return attn_output
+
+    # 如果是 1D tensor
+    elif isinstance(attn_output, torch.Tensor):
+        return attn_output.sum()
+
+    # 如果是 list of tensors
+    elif isinstance(attn_output, list) and all(isinstance(x, torch.Tensor) for x in attn_output):
+        return sum(attn_output)
+
+    # 如果是嵌套 list
+    elif isinstance(attn_output, list) and all(isinstance(x, list) for x in attn_output):
+        return sum(t for sublist in attn_output for t in sublist)
+
+    else:
+        raise TypeError(f"Unsupported attn_output type: {type(attn_output)}")
 
 def validation(model, mat_lst, ds_iter, total_step, training_config, model_config, checkpoint_path, global_step, best_dev_accu, writer, task, init_t, update):
     val_acc = []
@@ -107,9 +126,14 @@ def validation(model, mat_lst, ds_iter, total_step, training_config, model_confi
                 label = batch['label'].cuda()
                 outputs, attn_lst = model(input_ids_0, input_ids_1, mask_0, mask_1, label, mat_lst,False)
                 if len(mat_lst) == 0:
-                    attn_loss_0 = sum(sum(outputs["attn_loss_0"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
-                    attn_loss_1 = sum(sum(outputs["attn_loss_1"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
-                    attn_loss = (attn_loss_0 + attn_loss_1) /2
+                    # attn_loss_0 = sum(sum(outputs["attn_loss_0"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                    # attn_loss_1 = sum(sum(outputs["attn_loss_1"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                    # attn_loss = (attn_loss_0 + attn_loss_1) /2
+                    attn_loss_0 = compute_attn_loss(outputs["attn_loss_0"]) * model_config["num_layers"] * \
+                                  training_config["attn_loss_scale"]
+                    attn_loss_1 = compute_attn_loss(outputs["attn_loss_1"]) * model_config["num_layers"] * \
+                                  training_config["attn_loss_scale"]
+                    attn_loss = (attn_loss_0 + attn_loss_1) / 2
                 else:
                     attn_loss = 0
             else:
@@ -118,8 +142,10 @@ def validation(model, mat_lst, ds_iter, total_step, training_config, model_confi
                 label = batch['label'].cuda()
                 outputs, attn_lst = model(input,mask,label,mat_lst,False)
                 if len(mat_lst) == 0:
-                    attn_loss = sum(sum(outputs["attn_loss"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
-                    #attn_loss = sum(outputs["attn_loss"])*model_config["num_layers"] * training_config["attn_loss_scale"]
+                    # attn_loss = sum(sum(outputs["attn_loss"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                    # attn_loss = sum(outputs["attn_loss"])*model_config["num_layers"] * training_config["attn_loss_scale"]
+                    attn_loss = compute_attn_loss(outputs["attn_loss"]) * model_config["num_layers"] * training_config[
+                        "attn_loss_scale"]
                 else:
                     attn_loss = 0
             loss = outputs["loss"].mean()
@@ -151,7 +177,7 @@ def validation(model, mat_lst, ds_iter, total_step, training_config, model_confi
 
 
 
-def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_config, model_config, writer, task, global_name):
+def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_config, model_config, writer, task, name):
 
     logger.info("***** Running training *****")
     logger.info("  Total steps = %d", training_config["num_train_steps"])
@@ -167,16 +193,16 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
                               desc="Training (X / X Steps) (loss=X.X)",
                               bar_format="{l_bar}{r_bar}",
                               dynamic_ncols=True)
-    
+
     model.train()
     init_t = time.time()
 
-    mat_lst = []
-    prev_l = []
-    cur_l = []
-    prev_dist = []
+    mat_lst = [] # 稀疏注意力模式
+    prev_l = [] # 前一注意力分布
+    cur_l = [] # 当前注意力分布
+    prev_dist = [] # 注意力变化幅度
     cur_dist = []
-    mem_stat = []
+    mem_stat = [] # GPU 内存统计
 
     update = 0
     total_time = 0
@@ -185,7 +211,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
     start = torch.cuda.Event(enable_timing=True)
     end = torch.cuda.Event(enable_timing=True)
     start.record()
-    for step, batch in enumerate(epoch_iterator):    
+    for step, batch in enumerate(epoch_iterator):
         if (step + 1) % training_config["eval_frequency"] == 0:
             is_attn = True
         else:
@@ -200,9 +226,15 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
             label = batch['label'].cuda()
             outputs, attn_lst = model(input_ids_0, input_ids_1, mask_0, mask_1, label, mat_lst, True)
             if len(mat_lst) == 0:
-                attn_loss_0 = sum(sum(outputs["attn_loss_0"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
-                attn_loss_1 = sum(sum(outputs["attn_loss_1"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
-                attn_loss = (attn_loss_0 + attn_loss_1) /2
+                # attn_loss_0 = sum(sum(outputs["attn_loss_0"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                # attn_loss_1 = sum(sum(outputs["attn_loss_1"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                # attn_loss = (attn_loss_0 + attn_loss_1) /2
+
+                attn_loss_0 = compute_attn_loss(outputs["attn_loss_0"]) * model_config["num_layers"] * \
+                              training_config["attn_loss_scale"]
+                attn_loss_1 = compute_attn_loss(outputs["attn_loss_1"]) * model_config["num_layers"] * \
+                              training_config["attn_loss_scale"]
+                attn_loss = (attn_loss_0 + attn_loss_1) / 2
             else:
                 attn_loss = 0
         else:
@@ -214,8 +246,11 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
             outputs, attn_lst = model(input, mask, label, mat_lst, True)
             #print(outputs)
             if len(mat_lst) == 0:
-                attn_loss = sum(sum(outputs["attn_loss"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
+                # attn_loss = sum(sum(outputs["attn_loss"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]
                 #attn_loss = sum(outputs["attn_loss"])*model_config["num_layers"] * training_config["attn_loss_scale"]
+                attn_loss = compute_attn_loss(outputs["attn_loss"]) * model_config["num_layers"] * training_config[
+                    "attn_loss_scale"]
+
             else:
                 attn_loss = 0
 
@@ -232,7 +267,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
 
 
         mem_stat.append([step, torch.cuda.memory_stats()['active_bytes.all.allocated']>>20])
-        
+
         loss = outputs["loss"].mean()
         #print(attn_loss)
         acc = outputs["accu"].mean()
@@ -248,7 +283,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
         losses.update(loss)
         epoch_iterator.set_description(
                     "Training (%d / %d Steps) (loss=%2.5f)" % (step, total_step, losses.val))
-        
+
         if len(mat_lst) == 0 :
             dense_step = step
             transition = True
@@ -271,7 +306,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
                         transition = False
 
                 skew = skewness(X)
-                
+
                 if skew < training_config['skewness'] :
                     transition = False
 
@@ -293,7 +328,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
                 #print(total_time)
                 model.train()
                 start.record()
-            else: 
+            else:
                 end.record()
                 torch.cuda.synchronize()
                 total_time += (start.elapsed_time(end))
@@ -321,13 +356,13 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
                         pickle.dump(p, f, pickle.HIGHEST_PROTOCOL)
                         print(f"{name} saved")
                     p.requires_grad = False
-            
+
             block_size = model_config["block_size"]
             num_blocks = int(model_config["max_seq_len"]/block_size)
 
             for l in range(model_config["num_layers"]):
                 attn_pattern_path = f'./pickle/{task}/module.model.transformer_{l}.mha.pattern.pickle'
-                
+
                 print(attn_pattern_path)
                 with open(attn_pattern_path, 'rb') as f:
                     attn_pattern = pickle.load(f)
@@ -348,7 +383,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
                 transformer_module = getattr(model.module.model, module_name)
                 mha_module = getattr(transformer_module, "mha")
                 mha_module.reconstruct_for_blocksparse(model_config)
-       
+
             mat_lst = torch.stack(mat_lst, 0)
             #mat_lst = torch.stack([mat_lst,mat_lst,mat_lst,mat_lst], 0)
             mat_lst = torch.stack([mat_lst], 0)
@@ -358,18 +393,13 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
 
             print("total pattern searching time (s): {}".format(time.time()-pattern_t))
             pickle_path = f'./pickle/layer_attn-{model_config["random_seed"]}'
-            print(f"Model is located at {pickle_path}")
-
             if not os.path.exists(pickle_path):
                 os.mkdir(pickle_path)
-
-            print(f"Model is saved at {pickle_path}/mat_list_{task}_{global_name}.pickle")
-            with open(f'{pickle_path}/mat_lst_{task}_{global_name}.pickle', 'wb') as f:
+            with open(f'{pickle_path}/mat_lst_{task}_{name}.pickle', 'wb') as f:
                 pickle.dump(mat_lst, f, pickle.HIGHEST_PROTOCOL)
-            
-#        if transition and step - dense_step == 10:
-#            break
 
+        # if transition and step - dense_step == 10:
+        #     break
         if (step + 2) > total_step:
             break
 
@@ -415,7 +445,7 @@ def evaluation(model, mat_lst, ds_iter, training_config, task):
             eval_losses.update(loss.mean())
             acc = outputs["accu"].mean()
             val_acc.append(acc)
-            
+
         total_acc = sum(val_acc) / len(val_acc)
 
     print("Evaluation Results")
@@ -482,10 +512,10 @@ def main():
 
     device_ids = list(range(torch.cuda.device_count()))
     model_config['batch_size'] = int(training_config['batch_size']/ len(device_ids))
-    
+
     print(f"GPU list: {device_ids}")
     #os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-    
+
 
     print(json.dumps([model_config, training_config], indent = 4))
 
@@ -516,9 +546,9 @@ def main():
     ### data preparation ###
 
     ds_iter = {
-        "train":DataLoader(LRADataset(f"data/lra_processed/{args.task}.train.pickle", True), batch_size = training_config["batch_size"], drop_last = True),
-        "dev":enumerate(DataLoader(LRADataset(f"data/lra_processed/{args.task}.dev.pickle", True), batch_size = training_config["batch_size"], drop_last = True)),
-        "test":enumerate(DataLoader(LRADataset(f"data/lra_processed/{args.task}.test.pickle", False), batch_size = training_config["batch_size"], drop_last = True)),
+        "train":DataLoader(LRADataset(f"../Skyformer/data/lra_processed/{args.task}.train.pickle", True), batch_size = training_config["batch_size"], drop_last = True),
+        "dev":enumerate(DataLoader(LRADataset(f"../Skyformer/data/lra_processed/{args.task}.dev.pickle", True), batch_size = training_config["batch_size"], drop_last = True)),
+        "test":enumerate(DataLoader(LRADataset(f"../Skyformer/data/lra_processed/{args.task}.test.pickle", False), batch_size = training_config["batch_size"], drop_last = True)),
     }
 
     ### training preparation ###
@@ -555,7 +585,7 @@ def main():
         print("loading the best model from: " + checkpoint_path)
 
     evaluation(model, mat_lst, ds_iter, training_config, args.task)
-    
+
 
 if __name__ == '__main__':
     main()
