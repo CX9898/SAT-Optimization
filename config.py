@@ -107,11 +107,11 @@ image={
             "pooling_mode":"MEAN",
             "num_classes": 10,
             "block_size":32,
-            "batch_size": 512, 
+            "batch_size": 256,
             "density" : 0.05,
         },
         "training":{
-            "batch_size":512, 
+            "batch_size":256,
             # "learning_rate":0.0007, 
             "learning_rate":0.002,
             "warmup":175,

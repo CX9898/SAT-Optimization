@@ -47,8 +47,6 @@ class Embeddings(nn.Module):
 
         X = X_token + X_pos
 
-        print(X_token.shape, X_pos.shape)
-
         X = self.dropout(X)
 
         return X
