@@ -56,10 +56,10 @@ ReBELL::ReBELL(const int K, const sparseMatrix::CSR<float> &matrix) {
 //    rowReordering_cpu(matrix, reorderedRows_, rowReordering_time);
 //    rowReordering_gpu(matrix, row_similarity_threshold_alpha, blockSize, reorderedRows_, rowReordering_time);
 
-    printf("rowReordering time : %f ms\n", rowReordering_time);
+//    printf("rowReordering time : %f ms\n", rowReordering_time);
 
     numRowPanels_ = std::ceil(static_cast<float>(reorderedRows.size()) / ROW_PANEL_SIZE);
-    printf("numRowPanels : %d\n", numRowPanels_);
+//    printf("numRowPanels : %d\n", numRowPanels_);
 
     // Column reordering
     std::vector<UIN> sparseCols;
@@ -75,7 +75,7 @@ ReBELL::ReBELL(const int K, const sparseMatrix::CSR<float> &matrix) {
                       sparseColOffsets,
                       sparseValueOffsets,
                       colReordering_time);
-    printf("colReordering time : %f ms\n", colReordering_time);
+//    printf("colReordering time : %f ms\n", colReordering_time);
 
     // Calculate the maximum number of dense column blocks in a row panel
     maxNumDenseColBlocks_ = 0;
@@ -211,7 +211,7 @@ ReBELL::ReBELL(const int K, const sparseMatrix::CSR<float> &matrix) {
 
     timeCalculator.endClock();
     float bell_time = timeCalculator.getTime();
-    printf("bell time : %f ms\n", bell_time);
+//    printf("bell time : %f ms\n", bell_time);
     time_ = rowReordering_time + colReordering_time + bell_time;
 
     // Copy data to device

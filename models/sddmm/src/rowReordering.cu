@@ -1025,11 +1025,11 @@ std::vector<UIN> bsa_rowReordering_gpu(const sparseMatrix::CSR<float> &matrix,
                                        float alpha,
                                        UIN block_size,
                                        float &reordering_time) {
-    printf("Start bsa_rowReordering_gpu. Number of rows: %u, block_size: %u\n", matrix.row(), block_size);
+//    printf("Start bsa_rowReordering_gpu. Number of rows: %u, block_size: %u\n", matrix.row(), block_size);
     std::vector<UIN> row_permutation;
     // int num_blocks_per_row = (lhs.cols + block_size - 1) / block_size;
     int num_blocks_per_row = ceil((float) matrix.col() / (float) block_size);
-    printf("num_blocks_per_row = %d\n", num_blocks_per_row);
+//    printf("num_blocks_per_row = %d\n", num_blocks_per_row);
 
     /*prepare resources -start*/
     dev::vector<UIN> Encodings_gpu(static_cast<size_t>(num_blocks_per_row) * matrix.row(), 0);
@@ -1046,7 +1046,7 @@ std::vector<UIN> bsa_rowReordering_gpu(const sparseMatrix::CSR<float> &matrix,
                         block_size);
     timeCalculator.endClock();
     float calculateDispersion_time = timeCalculator.getTime();
-    printf("calculateDispersion_time = %f ms\n", calculateDispersion_time);
+//    printf("calculateDispersion_time = %f ms\n", calculateDispersion_time);
 
     std::vector<UIN> Dispersions = d2h(Dispersions_gpu);
 
@@ -1056,7 +1056,7 @@ std::vector<UIN> bsa_rowReordering_gpu(const sparseMatrix::CSR<float> &matrix,
     host::sort_by_key(Dispersions.data(), Dispersions.data() + Dispersions.size(), ascending.data());
     timeCalculator.endClock();
     float sort_ascending_time = timeCalculator.getTime();
-    printf("sort_ascending_time = %f ms\n", sort_ascending_time);
+//    printf("sort_ascending_time = %f ms\n", sort_ascending_time);
 
     timeCalculator.startClock();
 
@@ -1069,11 +1069,11 @@ std::vector<UIN> bsa_rowReordering_gpu(const sparseMatrix::CSR<float> &matrix,
                                           alpha,
                                           cluster_cnt);
 
-    printf("Number of clusters: %u\n", cluster_cnt);
+//    printf("Number of clusters: %u\n", cluster_cnt);
 
     timeCalculator.endClock();
     float get_permutation_gpu_time = timeCalculator.getTime();
-    printf("get_permutation_gpu_time = %f ms\n", get_permutation_gpu_time);
+//    printf("get_permutation_gpu_time = %f ms\n", get_permutation_gpu_time);
 
     // Remove zero rows
     {
