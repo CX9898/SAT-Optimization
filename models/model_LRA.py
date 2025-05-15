@@ -56,7 +56,7 @@ class ModelForSC(nn.Module):
             if self.pooling_mode == "CLS":
                 input_ids_0, mask_0 = append_cls(input_ids_0, mask_0, self.vocab_size)
 
-            token_out, attn_loss_lst, attn_lst = self.model(input_ids_0, mask_0, mat_lst, is_attn)
+            token_out, attn_loss_lst, attn_lst = self.model(input_ids_0, mask_0, mat_lst, is_attn)  # 开始进入sddmm运算
             torch.cuda.nvtx.range_push("Sequence Classifier")
             seq_scores = self.seq_classifer(token_out)
             torch.cuda.nvtx.range_pop()

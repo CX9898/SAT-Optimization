@@ -105,7 +105,7 @@ class Attention(nn.Module):
                 #print(attn_pattern.shape)
                 attn_loss = self.MSEloss(self.avg_pool(attn), attn_pattern)
             else:
-                attn_out, attn = self.block_attn(Q.float(), K.float(), V.float(), mask.float(), mat)
+                attn_out, attn = self.block_attn(Q.float(), K.float(), V.float(), mask.float(), mat)  # 开始进入sddmm运算
                 attn_loss = 0
 
             torch.cuda.nvtx.range_pop()

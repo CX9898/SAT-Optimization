@@ -220,7 +220,7 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
             # print(mask[0])
             label = batch['label'].cuda()
             # print(label)
-            outputs, attn_lst = model(input, mask, label, mat_lst, True)
+            outputs, attn_lst = model(input, mask, label, mat_lst, True)  # 开始进入sddmm运算
             # print(outputs)
             if len(mat_lst) == 0:
                 # attn_loss = sum(sum(outputs["attn_loss"]))/4*model_config["num_layers"] * training_config["attn_loss_scale"]

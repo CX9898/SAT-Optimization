@@ -80,7 +80,7 @@ class TransformerLayer(nn.Module):
             end = torch.cuda.Event(enable_timing=True)
             start.record()
 
-        out, attn_loss, attn = self.mha(self.norm1(X), mask, mat)
+        out, attn_loss, attn = self.mha(self.norm1(X), mask, mat)  # 开始进入sddmm运算
 
         X = self.dropout1(out) + X
 
@@ -138,7 +138,7 @@ class Model(nn.Module):
                     attn_lst.append(torch.mean(torch.mean(attn,dim=0),dim=0))
                     attn_loss_lst.append(attn_loss)
             else:
-                X, attn_loss, attn = getattr(self, f"transformer_{idx}")(X, mask, mat_lst[0][idx])
+                X, attn_loss, attn = getattr(self, f"transformer_{idx}")(X, mask, mat_lst[0][idx])  # 开始进入sddmm运算
                 if self.inference:
                     attn_lst.append(attn)
 

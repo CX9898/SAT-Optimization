@@ -60,7 +60,7 @@ class CUDABlockAttention(nn.Module):
                 hColumns_p = Columns.contiguous().data_ptr()
                 hSum_mat_p = sum_mat.contiguous().data_ptr()                    
                 torch.cuda.nvtx.range_push(f"Attention forward")
-                attn_cpp.attn_forward(attn_handle, hQuery_p, hKey_p, hValue_p, hAttn_p, hOut_p, hOffsets_p, hColumns_p, hSum_mat_p, nnz)
+                attn_cpp.attn_forward(attn_handle, hQuery_p, hKey_p, hValue_p, hAttn_p, hOut_p, hOffsets_p, hColumns_p, hSum_mat_p, nnz) # 开始进入sddmm运算
                 torch.cuda.nvtx.range_pop()
                 ctx.save_for_backward(query, key, value, hAttn, Offsets,Columns,sum_mat)
 
@@ -114,6 +114,6 @@ class CUDABlockAttention(nn.Module):
         self.attn_func = BlockAttnFunction
 
     def forward(self, query, key, value, mask, mat):
-        return self.attn_func.apply(query, key, value, mask, mat)
+        return self.attn_func.apply(query, key, value, mask, mat)  # 开始进入sddmm运算
     
 
