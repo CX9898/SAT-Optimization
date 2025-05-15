@@ -491,7 +491,7 @@ void calculateDispersion(const sparseMatrix::CSR<float> &matrix,
     dev::vector<UIN> colidx_gpu(matrix.colIndices());
 
     const size_t shm_size = num_blocks_per_row * sizeof(UIN) + (blockdim / WARP_SIZE) * sizeof(UIN);
-    printf("calculateDispersion shm_size = %lu\n", shm_size);
+//    printf("calculateDispersion shm_size = %lu\n", shm_size);
     if (shm_size > maxSharedMemoryPerBlock) {
         printf("Warning! Shared memory size exceeds the limit. shm_size = %zu\n", shm_size);
     }
@@ -921,14 +921,14 @@ std::vector<UIN> get_permutation_gpu(const sparseMatrix::CSR<float> &mat,
     }
     // blockdim = 1024;
 
-    printf("bsa_clustering blockDim = %d\n", blockdim);
+//    printf("bsa_clustering blockDim = %d\n", blockdim);
 
     int grid = 1;
 
     size_t
         shm_size = (blockdim * sizeof(int) + blockdim * sizeof(float)) / WARP_SIZE + sizeof(int) * num_blocks_per_row;
 
-    printf("bsa_clustering shm_size: %zu\n", shm_size);
+//    printf("bsa_clustering shm_size: %zu\n", shm_size);
 
     cudaStream_t initial_stream;
     cudaStreamCreateWithFlags(&initial_stream, cudaStreamNonBlocking);
@@ -1014,7 +1014,7 @@ UIN calculateBlockSize(const sparseMatrix::CSR<float> &matrix) {
         std::ceil((static_cast<size_t>(matrix.row()) * matrix.row()) * sizeof(UIN) / static_cast<float>(freeMem / 2));
     const UIN minBlockSizeDueToSMEM =
         std::ceil((static_cast<size_t>(matrix.col()) * sizeof(UIN)) / static_cast<float>(maxSharedMemoryPerBlock / 2));
-    printf("minBlockSizeDueToGMEM : %d, minBlockSizeDueToSMEM : %d\n", minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
+//    printf("minBlockSizeDueToGMEM : %d, minBlockSizeDueToSMEM : %d\n", minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
 
     UIN blockSize = std::max(minBlockSizeDueToGMEM, minBlockSizeDueToSMEM);
 

@@ -2303,7 +2303,7 @@ void sddmm_gpu_batch(const UIN numBatch, const UIN M, const UIN N, const UIN K,
     cudaTimeCalculator.endClock();
 
     const float totalTime = cudaTimeCalculator.getTime();
-    printf("sddmm_gpu_batch: numBatch = %d, totalTime: %f ms\n", numBatch, totalTime);
+//    printf("sddmm_gpu_batch: numBatch = %d, totalTime: %f ms\n", numBatch, totalTime);
     time = totalTime;
 
 //    cudaGraphExecDestroy(graphExec);
