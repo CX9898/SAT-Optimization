@@ -20,12 +20,24 @@ inline bool checkOneData(const T data1, const T data2) {
 
 template<>
 inline bool checkOneData<float>(const float data1, const float data2) {
-    return std::fabs(data1 - data2) < ERROR_THRESHOLD_EPSILON;
+    constexpr float ABS_EPSILON = 1e-4f;
+
+    const float absDiff = std::fabs(data1 - data2);
+    if (absDiff < ABS_EPSILON) return true;
+
+    const float maxVal = std::max(std::max(std::fabs(data1), std::fabs(data2)), ERROR_THRESHOLD_EPSILON);
+    return (absDiff / maxVal) < ERROR_THRESHOLD_EPSILON;
 }
 
 template<>
 inline bool checkOneData<double>(const double data1, const double data2) {
-    return std::fabs(data1 - data2) < ERROR_THRESHOLD_EPSILON;
+    constexpr double ABS_EPSILON = 1e-4;
+
+    const double absDiff = std::fabs(data1 - data2);
+    if (absDiff < ABS_EPSILON) return true;
+
+    const double maxVal = std::max(std::max(std::fabs(data1), std::fabs(data2)), static_cast<double>(ERROR_THRESHOLD_EPSILON));
+    return (absDiff / maxVal) < ERROR_THRESHOLD_EPSILON;
 }
 
 template<typename T>

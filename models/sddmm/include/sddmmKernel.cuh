@@ -44,3 +44,7 @@ void sddmm_gpu_batch(const UIN numBatch,
                      const std::vector<ReBELL> &rebell,
                      float *matrixP,
                      float &time);
+
+void batchedMatrixTranspose(const UIN width, const UIN height, const UIN numBatches,
+                            const float *d_input,
+                            float *d_output);

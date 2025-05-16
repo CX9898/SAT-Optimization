@@ -64,8 +64,8 @@ void sddmmBatch(int seq_len,
     cudaMemcpy(offsets.data(), d_offsets, offsets.size() * sizeof(UIN), cudaMemcpyDeviceToHost);
     cudaMemcpy(columns.data(), d_columns, columns.size() * sizeof(UIN), cudaMemcpyDeviceToHost);
 
-    ReBELL rebell;
     sparseMatrix::CSR<float> matrixP(M, M, nnz, offsets, columns);
+    ReBELL rebell(K, matrixP);
 
     float time = 0.0f;
     sddmm_gpu_batch(numBatches, M, M, K, nnz, dQuery, dKey, rebell, dAttn, time);
@@ -81,9 +81,9 @@ void sddmmBatch(int seq_len,
                 const int *d_columns,
                 float *dAttn) {
 
-    dev::vector<UIN> converted_offsets(numBatches * (seq_len + 1));
+    dev::vector<UIN> converted_offsets(seq_len + 1);
     cudaMemcpy(converted_offsets.data(), d_offsets, converted_offsets.size() * sizeof(int), cudaMemcpyDeviceToDevice);
-    dev::vector<UIN> converted_columns(numBatches * nnz);
+    dev::vector<UIN> converted_columns(nnz);
     cudaMemcpy(converted_columns.data(), d_columns, converted_columns.size() * sizeof(int), cudaMemcpyDeviceToDevice);
 
     sddmmBatch(seq_len,
