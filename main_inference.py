@@ -23,13 +23,13 @@ import pickle
 import requests
 import json
 
-
 logger = logging.getLogger(__name__)
 device_ids = list(range(torch.cuda.device_count()))
 
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -47,7 +47,6 @@ class AverageMeter(object):
 
 
 def eval_LRA(model, mat_lst, ds_iter, training_config, task):
-
     val_acc = []
     attn_time = []
     eval_losses = AverageMeter()
@@ -63,23 +62,23 @@ def eval_LRA(model, mat_lst, ds_iter, training_config, task):
                 mask_0 = batch['mask_0'].cuda()
                 input_ids_1 = batch['input_ids_1'].cuda()
                 mask_1 = batch['mask_1'].cuda()
-                #print(mask[0])
+                # print(mask[0])
                 label = batch['label'].cuda()
                 outputs, attn_lst = model(input_ids_0, input_ids_1, mask_0, mask_1, label, mat_lst, False)
             else:
                 input = batch['input_ids_0'].cuda()
                 mask = batch['mask_0'].cuda()
-                #print(mask[0])
+                # print(mask[0])
                 label = batch['label'].cuda()
-                outputs, attn_lst = model(input,mask,label,mat_lst, False)
+                outputs, attn_lst = model(input, mask, label, mat_lst, False)
             loss = outputs["loss"].mean()
             eval_losses.update(loss.mean())
             acc = outputs["accu"].mean()
             val_acc.append(acc)
-       
+
         total_acc = sum(val_acc) / len(val_acc)
 
-    print("total eval time (s): {}".format((time.time()-init_t)))
+    print("total eval time (s): {}".format((time.time() - init_t)))
     end.record()
     torch.cuda.synchronize()
     print("Evaluation Results")
@@ -87,20 +86,20 @@ def eval_LRA(model, mat_lst, ds_iter, training_config, task):
     print("Accuracy: %2.5f" % total_acc)
     print(f"total steps: {len(val_acc)}")
     print(f"total eval time: {(start.elapsed_time(end))}")
-    print(f"eval time: {(start.elapsed_time(end))/len(val_acc)}")
-    print("peak memory usage (MB): {}".format(torch.cuda.memory_stats()['active_bytes.all.peak']>>20))
-    print("all memory usage (MB): {}".format(torch.cuda.memory_stats()['active_bytes.all.allocated']>>20))
+    print(f"eval time: {(start.elapsed_time(end)) / len(val_acc)}")
+    print("peak memory usage (MB): {}".format(torch.cuda.memory_stats()['active_bytes.all.peak'] >> 20))
+    print("all memory usage (MB): {}".format(torch.cuda.memory_stats()['active_bytes.all.allocated'] >> 20))
     print(torch.cuda.memory_summary(device=0))
 
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", type = str, default="eval",
+    parser.add_argument("--mode", type=str, default="eval",
                         help="train eval")
-    parser.add_argument("--checkpoint", type = str, default="test",
+    parser.add_argument("--checkpoint", type=str, default="test",
                         help="load ./checkpoints/model_name.model to evaluation")
-    parser.add_argument("--task", type = str, default="lra-image",
-                        help = "lra-listops, lra-retrieval, lra-text, lra-pathfinder32-curv_contour_length_14")
+    parser.add_argument("--task", type=str, default="lra-image",
+                        help="lra-listops, lra-retrieval, lra-text, lra-pathfinder32-curv_contour_length_14")
     parser.add_argument('--random', type=int, default=42)
     parser.add_argument('--name', type=str)
     args = parser.parse_args()
@@ -116,7 +115,6 @@ def main():
 
     if args.task == 'lra-pathfinder':
         args.task = 'lra-pathfinder32-curv_contour_length_14'
-
 
     ### get model config ###
     model_config = Config[args.task]["model"]
@@ -135,7 +133,7 @@ def main():
     if not os.path.exists(log_dir):
         os.mkdir(log_dir)
 
-    log_path = os.path.join(log_dir,'test.{}3.log'.format(args.name))
+    log_path = os.path.join(log_dir, 'test.{}3.log'.format(args.name))
     redirect_stdout(open(log_path, 'w'))
 
     ###  set the random seeds for deterministic results. ####
@@ -146,12 +144,11 @@ def main():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-
     device_ids = list(range(torch.cuda.device_count()))
-    model_config['batch_size'] = int(training_config['batch_size']/ len(device_ids))
+    model_config['batch_size'] = int(training_config['batch_size'] / len(device_ids))
     print(f"GPU list: {device_ids}")
 
-    print(json.dumps([model_config, training_config], indent = 4))
+    print(json.dumps([model_config, training_config], indent=4))
 
     ### model preparation ###
     if args.task == "lra-retrieval":
@@ -159,7 +156,7 @@ def main():
     else:
         model = ModelForSC(model_config, True)
 
-    model = nn.DataParallel(model, device_ids = device_ids)
+    model = nn.DataParallel(model, device_ids=device_ids)
 
     mat_lst_path = f'./pickle/layer_attn-{args.random}/mat_lst_{args.task}_{args.name}.pickle'
     with open(mat_lst_path, 'rb') as f:
@@ -179,15 +176,18 @@ def main():
 
     model = model.cuda()
     print(model)
-    print(f"parameter_size: {[weight.size() for weight in model.parameters()]}", flush = True)
-    print(f"num_parameter: {np.sum([np.prod(weight.size()) for weight in model.parameters()])}", flush = True)
+    print(f"parameter_size: {[weight.size() for weight in model.parameters()]}", flush=True)
+    print(f"num_parameter: {np.sum([np.prod(weight.size()) for weight in model.parameters()])}", flush=True)
 
     ### data preparation ###
 
     ds_iter = {
-        "train":DataLoader(LRADataset(f"./data/lra_processed/{args.task}.train.pickle", True), batch_size = training_config["batch_size"], drop_last = True),
-        "dev":enumerate(DataLoader(LRADataset(f"./data/lra_processed/{args.task}.dev.pickle", True), batch_size = training_config["batch_size"], drop_last = True)),
-        "test":enumerate(DataLoader(LRADataset(f"./data/lra_processed/{args.task}.test.pickle", False), batch_size = training_config["batch_size"], drop_last = True)),
+        "train": DataLoader(LRADataset(f"./data/lra_processed/{args.task}.train.pickle", True),
+                            batch_size=training_config["batch_size"], drop_last=True),
+        "dev": enumerate(DataLoader(LRADataset(f"./data/lra_processed/{args.task}.dev.pickle", True),
+                                    batch_size=training_config["batch_size"], drop_last=True)),
+        "test": enumerate(DataLoader(LRADataset(f"./data/lra_processed/{args.task}.test.pickle", False),
+                                     batch_size=training_config["batch_size"], drop_last=True)),
     }
 
     accumu_steps = model_config["bz_rate"] if "bz_rate" in model_config else 1
@@ -201,6 +201,7 @@ def main():
         eval_LRA(model, mat_lst, ds_iter, training_config, args.task)
     else:
         print("NO MODEL!!!")
+
 
 if __name__ == '__main__':
     main()

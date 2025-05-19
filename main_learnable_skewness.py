@@ -178,12 +178,12 @@ def train_step(model, optimizer, lr_scheduler, ds_iter, amp_scaler, training_con
     model.train()
     init_t = time.time()
 
-    mat_lst = [] # 稀疏注意力模式
-    prev_l = [] # 前一注意力分布
-    cur_l = [] # 当前注意力分布
-    prev_dist = [] # 注意力变化幅度
+    mat_lst = []  # 稀疏注意力模式
+    prev_l = []  # 前一注意力分布
+    cur_l = []  # 当前注意力分布
+    prev_dist = []  # 注意力变化幅度
     cur_dist = []
-    mem_stat = [] # GPU 内存统计
+    mem_stat = []  # GPU 内存统计
 
     update = 0
     total_time = 0
