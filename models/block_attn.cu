@@ -164,6 +164,9 @@ struct SddmmOperation {
           const int N = seq_len;
           const int K = emb_dim;
 
+          CudaTimeCalculator timeCalculator;
+          timeCalculator.startClock();
+
           std::vector<UIN> offsets(M + 1);
           std::vector<UIN> columns(nnz);
           cudaMemcpy(offsets.data(), d_offsets, offsets.size() * sizeof(UIN), cudaMemcpyDeviceToHost);
@@ -171,119 +174,114 @@ struct SddmmOperation {
           sparseMatrix::CSR<float> matrixP(M, N, nnz, offsets, columns);
           ReBELL rebell(K, matrixP);
 
-          std::vector<float> hKey(num_batches * (N * K));
-          cudaMemcpy(hKey.data(), dQuery, hKey.size() * sizeof(int), cudaMemcpyDeviceToHost);
-
           dev::vector<float> dKey_new(num_batches * (N * K));
-//          for (int batchId = 0; batchId < num_batches; ++batchId) {
-//              Matrix<float> matrixB(N, K, MatrixStorageOrder::row_major, hKey.data() + batchId * (N * K));
-//              matrixB.changeStorageOrder();
-//              cudaMemcpy(dKey_new.data() + batchId * (N * K),
-//                         matrixB.values().data(),
-//                         matrixB.size() * sizeof(float),
-//                         cudaMemcpyHostToDevice);
-//          }
           batchedMatrixTranspose(N, K, num_batches, dKey, dKey_new.data());
+
+          timeCalculator.endClock();
+          float preprocessing_time = timeCalculator.getTime();
+          printf("Preprocessing time = %f\n", preprocessing_time);
+
+//          timeCalculator.startClock();
+
+//          timeCalculator.endClock();
+//          printf("transpose time = %f\n", timeCalculator.getTime());
 
           sddmm_gpu_batch(num_batches, M, N, K, nnz, dQuery, dKey_new.data(), rebell, dAttn, zcx_sddmm_time);
       }
 //      std::vector<float> hAttn_zcx(num_batches * nnz);
 //      cudaMemcpy(hAttn_zcx.data(), dAttn, hAttn_zcx.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
-      float cusparse_sddmm_time;
-      {
-          size_t bufferSize = 0;
-          int lda = emb_dim;
-          int ldb = seq_len;
-          int input_size = seq_len * emb_dim;
-
-          float alpha = 1.0f;
-          float beta = 0.0f;
-
-          if (sddmm_handle == NULL) {
-              cusparseCreate(&sddmm_handle);
-          }
-
-          cusparseDnMatDescr_t matA, matB;
-          cusparseSpMatDescr_t matC;
-          nvtxRangePush("SDDMM prepare resources");
-
-          // Create dense matrix A
-          cusparseCreateDnMat(&matA, seq_len, emb_dim, lda, dQuery,
-                              CUDA_R_32F, CUSPARSE_ORDER_ROW);
-          cusparseDnMatSetStridedBatch(matA, num_batches, input_size);
-          // Create dense matrix B
-          cusparseCreateDnMat(&matB, emb_dim, seq_len, ldb, dKey,
-                              CUDA_R_32F, CUSPARSE_ORDER_ROW);
-          cusparseDnMatSetStridedBatch(matB, num_batches, input_size);
-          // Create sparse matrix C in CSR format
-          cusparseCreateCsr(&matC, seq_len, seq_len, nnz,
-                            d_offsets, d_columns, dAttn,
-                            CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,
-                            CUSPARSE_INDEX_BASE_ZERO, CUDA_R_32F);
-          cusparseCsrSetStridedBatch(matC, num_batches, 0, nnz);
-          // allocate an external buffer if needed
-
-          nvtxRangePop();
-          nvtxRangePush("Malloc from sddmm");
-          if (sddmm_dBuffer == NULL) {
-
-              nvtxRangePush("SDDMM buffer size");
-              cusparseSDDMM_bufferSize(
-                  sddmm_handle,
-                  CUSPARSE_OPERATION_NON_TRANSPOSE,
-                  CUSPARSE_OPERATION_NON_TRANSPOSE,
-                  &alpha, matA, matB, &beta, matC, CUDA_R_32F,
-                  CUSPARSE_SDDMM_ALG_DEFAULT, &bufferSize);
-
-              nvtxRangePop();
-              //printf("MALLOC from SDDMM %d %d %X\n", getpid(), gettid(), this);
-              cudaMalloc(&sddmm_dBuffer, bufferSize);
-          }
-          nvtxRangePop();
-
-          nvtxRangePush("SDDMM PREPROCESS");
-          // execute preprocess (optional)
-          cusparseSDDMM_preprocess(
-              sddmm_handle,
-              CUSPARSE_OPERATION_NON_TRANSPOSE,
-              CUSPARSE_OPERATION_NON_TRANSPOSE,
-              &alpha, matA, matB, &beta, matC, CUDA_R_32F,
-              CUSPARSE_SDDMM_ALG_DEFAULT, sddmm_dBuffer);
-          nvtxRangePop();
-
-          nvtxRangePush("SDDMM COMPUTE");
-
-          CudaTimeCalculator timeCalculator;
-          timeCalculator.startClock();
-          cusparseSDDMM(sddmm_handle,
-                        CUSPARSE_OPERATION_NON_TRANSPOSE,
-                        CUSPARSE_OPERATION_NON_TRANSPOSE,
-                        &alpha, matA, matB, &beta, matC, CUDA_R_32F,
-                        CUSPARSE_SDDMM_ALG_DEFAULT, sddmm_dBuffer);
-
-          timeCalculator.endClock();
-          cusparse_sddmm_time = timeCalculator.getTime();
-          // destroy matrix/vector descriptors
-          nvtxRangePop();
-          nvtxRangePush("nvtx DESTROY Resources");
-          cusparseDestroyDnMat(matA);
-          cusparseDestroyDnMat(matB);
-          cusparseDestroySpMat(matC);
-          // cudaFree(sddmm_dBuffer);
-          nvtxRangePop();
-      }
+//
+//       float cusparse_sddmm_time;
+//       {
+//           size_t bufferSize = 0;
+//           int lda = emb_dim;
+//           int ldb = seq_len;
+//           int input_size = seq_len * emb_dim;
+//
+//           float alpha = 1.0f;
+//           float beta = 0.0f;
+//
+//           if (sddmm_handle == NULL) {
+//               cusparseCreate(&sddmm_handle);
+//           }
+//
+//           cusparseDnMatDescr_t matA, matB;
+//           cusparseSpMatDescr_t matC;
+//           nvtxRangePush("SDDMM prepare resources");
+//
+//           // Create dense matrix A
+//           cusparseCreateDnMat(&matA, seq_len, emb_dim, lda, dQuery,
+//                               CUDA_R_32F, CUSPARSE_ORDER_ROW);
+//           cusparseDnMatSetStridedBatch(matA, num_batches, input_size);
+//           // Create dense matrix B
+//           cusparseCreateDnMat(&matB, emb_dim, seq_len, ldb, dKey,
+//                               CUDA_R_32F, CUSPARSE_ORDER_ROW);
+//           cusparseDnMatSetStridedBatch(matB, num_batches, input_size);
+//           // Create sparse matrix C in CSR format
+//           cusparseCreateCsr(&matC, seq_len, seq_len, nnz,
+//                             d_offsets, d_columns, dAttn,
+//                             CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,
+//                             CUSPARSE_INDEX_BASE_ZERO, CUDA_R_32F);
+//           cusparseCsrSetStridedBatch(matC, num_batches, 0, nnz);
+//           // allocate an external buffer if needed
+//
+//           nvtxRangePop();
+//           nvtxRangePush("Malloc from sddmm");
+//           if (sddmm_dBuffer == NULL) {
+//
+//               nvtxRangePush("SDDMM buffer size");
+//               cusparseSDDMM_bufferSize(
+//                   sddmm_handle,
+//                   CUSPARSE_OPERATION_NON_TRANSPOSE,
+//                   CUSPARSE_OPERATION_NON_TRANSPOSE,
+//                   &alpha, matA, matB, &beta, matC, CUDA_R_32F,
+//                   CUSPARSE_SDDMM_ALG_DEFAULT, &bufferSize);
+//
+//               nvtxRangePop();
+//               //printf("MALLOC from SDDMM %d %d %X\n", getpid(), gettid(), this);
+//               cudaMalloc(&sddmm_dBuffer, bufferSize);
+//           }
+//           nvtxRangePop();
+//
+//           nvtxRangePush("SDDMM PREPROCESS");
+//           // execute preprocess (optional)
+//           cusparseSDDMM_preprocess(
+//               sddmm_handle,
+//               CUSPARSE_OPERATION_NON_TRANSPOSE,
+//               CUSPARSE_OPERATION_NON_TRANSPOSE,
+//               &alpha, matA, matB, &beta, matC, CUDA_R_32F,
+//               CUSPARSE_SDDMM_ALG_DEFAULT, sddmm_dBuffer);
+//           nvtxRangePop();
+//
+//           nvtxRangePush("SDDMM COMPUTE");
+//
+//           CudaTimeCalculator timeCalculator;
+//           timeCalculator.startClock();
+//           cusparseSDDMM(sddmm_handle,
+//                         CUSPARSE_OPERATION_NON_TRANSPOSE,
+//                         CUSPARSE_OPERATION_NON_TRANSPOSE,
+//                         &alpha, matA, matB, &beta, matC, CUDA_R_32F,
+//                         CUSPARSE_SDDMM_ALG_DEFAULT, sddmm_dBuffer);
+//
+//           timeCalculator.endClock();
+//           cusparse_sddmm_time = timeCalculator.getTime();
+//           // destroy matrix/vector descriptors
+//           nvtxRangePop();
+//           nvtxRangePush("nvtx DESTROY Resources");
+//           cusparseDestroyDnMat(matA);
+//           cusparseDestroyDnMat(matB);
+//           cusparseDestroySpMat(matC);
+//           // cudaFree(sddmm_dBuffer);
+//           nvtxRangePop();
+//       }
 //      std::vector<float> hAttn_cusparse(num_batches * nnz);
 //      cudaMemcpy(hAttn_cusparse.data(), dAttn, hAttn_cusparse.size() * sizeof(float), cudaMemcpyDeviceToHost);
 //
 //      if (!checkData(hAttn_zcx, hAttn_cusparse)) {
 //          printf("Error!!!!!!! check error\n");
 //      }
-
-      printf("zcx_sddmm_time = %f, cusparse_sddmm_time = %f, difference = %f\n",
-             zcx_sddmm_time,
-             cusparse_sddmm_time,
-             zcx_sddmm_time - cusparse_sddmm_time);
+//
+//      printf("sddmm_time = %f\n", cusparse_sddmm_time);
 
   }
 };
