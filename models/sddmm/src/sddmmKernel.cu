@@ -1064,6 +1064,8 @@ __global__ void sddmm_gpu_dense_block_m16n16k8_block256_matrixA_rowMaj_matrixB_c
 // blockDim: [256, 1, 1]
 // 一个thread block负责一个row panel中的8个col block
 // batch version
+// matrixA: row major
+// matrixB: col major
 __global__ void sddmm_gpu_dense_block_batch_m16n16k8_block256(const UIN M,
                                                               const UIN N,
                                                               const UIN K,
@@ -2535,19 +2537,16 @@ void sddmm_gpu_batch(const UIN numBatch, const UIN M, const UIN N, const UIN K,
     grid_sparse.y = rebell.maxNumSparseColBlocks();
     grid_sparse.z = numBatch;
 
-    printf("grid_dense: [%u, %u, %u], block_dense: [%u, %u, %u]\n",
-           grid_dense.x, grid_dense.y, grid_dense.z,
-           block_dense.x, block_dense.y, block_dense.z);
-    printf("grid_sparse: [%u, %u, %u], block_sparse: [%u, %u, %u]\n",
-           grid_sparse.x, grid_sparse.y, grid_sparse.z,
-           block_sparse.x, block_sparse.y, block_sparse.z);
+//     printf("grid_dense: [%u, %u, %u], block_dense: [%u, %u, %u]\n",
+//            grid_dense.x, grid_dense.y, grid_dense.z,
+//            block_dense.x, block_dense.y, block_dense.z);
+//     printf("grid_sparse: [%u, %u, %u], block_sparse: [%u, %u, %u]\n",
+//            grid_sparse.x, grid_sparse.y, grid_sparse.z,
+//            block_sparse.x, block_sparse.y, block_sparse.z);
 
-
-    CudaTimeCalculator totalTimeCalculator, denseKernelTimeCalculator, sparseKernelTimeCalculator;
-
-    totalTimeCalculator.startClock();
-
-    denseKernelTimeCalculator.startClock(denseStream);
+//    CudaTimeCalculator totalTimeCalculator;
+//
+//    totalTimeCalculator.startClock();
 
 #ifdef WMMA_16_16_8
     kernel::sddmm_gpu_dense_block_batch_m16n16k8_block256<<<grid_dense, block_dense, 0, denseStream>>>(M, N, K, nnz,
@@ -2562,10 +2561,6 @@ void sddmm_gpu_batch(const UIN numBatch, const UIN M, const UIN N, const UIN K,
         matrixP);
 #endif // WMMA_16_16_8
 
-    denseKernelTimeCalculator.endClock(denseStream);
-
-    sparseKernelTimeCalculator.startClock(sparseStream);
-
     kernel::sddmm_gpu_sparse_block_batch_2threadOneData_shuffle<<<grid_sparse, block_sparse, 0, sparseStream>>>(M, N, K, nnz,
         matrixA,
         matrixB,
@@ -2577,21 +2572,11 @@ void sddmm_gpu_batch(const UIN numBatch, const UIN M, const UIN N, const UIN K,
         rebell.sparseColIndices().data(),
         matrixP);
 
-    sparseKernelTimeCalculator.endClock(sparseStream);
+//    totalTimeCalculator.endClock();
 
-    totalTimeCalculator.endClock();
-
-    const float denseBlockTime = denseKernelTimeCalculator.getTime();
-    const float sparseBlockTime = sparseKernelTimeCalculator.getTime();
-    const float totalTime = totalTimeCalculator.getTime();
-
-    const float overlapEfficiency = (denseBlockTime + sparseBlockTime) / totalTime;
-
-    printf("denseBlockTime: %f ms\n", denseBlockTime);
-    printf("sparseBlockTime: %f ms\n", sparseBlockTime);
-    printf("totalTime: %f ms, overlapEfficiency: %f\n", totalTime, overlapEfficiency);
-
-    time = totalTime;
+//    const float totalTime = totalTimeCalculator.getTime();
+//     printf("totalTime: %f ms, overlapEfficiency: %f\n", totalTime, overlapEfficiency);
+//    time = totalTime;
 
     cudaStreamDestroy(denseStream);
     cudaStreamDestroy(sparseStream);
